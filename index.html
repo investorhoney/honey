@@ -667,7 +667,6 @@
         <div class="tv-wrap"></div>
         <div class="chart-fallback">트레이딩뷰 차트를 불러오지 못했어요.<br><a id="krFallbackLink" href="https://finance.naver.com/item/main.naver?code=005930" target="_blank" rel="noopener noreferrer" style="color:#9fb6ff">네이버증권에서 직접 보기 ↗</a></div>
       </div>
-      <div class="tapebox" id="krTape" style="margin-top:12px"></div>
     </section>
 
     <!-- ================= 미국주식 ================= -->
@@ -2315,12 +2314,6 @@
     renderKrQuick();
     st.kr.built = true;
     paintKrView();
-    if (!st.kr.tape) {
-      st.kr.tape = true;
-      window.__tvTape('krTape', KR.filter(function (k) { return !k.idx; }).slice(0, 8).map(function (k) {
-        return { proName: krTv(k.c), title: k.n };
-      }));
-    }
   }
 
   function selectUs(ticker, meta) {
