@@ -1339,7 +1339,7 @@
   var tr = {
     on: true,
     cache: {},
-    q: [], seen: {}, busy: false, timer: null, scrollT: null,
+    q: [], seen: {}, tries: {}, busy: false, timer: null, scrollT: null,
     gap: 600, fails: 0, dead: false, saveT: null
   };
   (function () {
@@ -1429,7 +1429,9 @@
     (keys || []).forEach(function (raw) {
       var k = trKey(raw);
       if (!k || tr.seen[k] || tr.cache[k]) return;
+      if ((tr.tries[k] || 0) >= 3) return;      // 두 번 실패한 문장은 다시 요청하지 않음
       tr.seen[k] = 1;
+      tr.tries[k] = (tr.tries[k] || 0) + 1;
       tr.q.push({ k: k, p: prio || 0 });
       added++;
     });
