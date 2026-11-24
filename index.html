@@ -177,6 +177,38 @@
   .hl .hl-b b{font-size:15px;color:#fff;font-variant-numeric:tabular-nums}
   .hl .hl-sub{font-size:12px;color:var(--muted-2);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 
+  /* ---------- 한국어 번역 줄 (en → ko) ---------- */
+  .ctrlline{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+  .trbtn{display:inline-flex;align-items:center;gap:6px;font-weight:650}
+  .trbtn .dp{width:7px;height:7px;border-radius:50%;background:#5ef0be;box-shadow:0 0 0 3px rgba(94,240,190,.15);transition:background .16s}
+  .trbtn[aria-pressed="false"]{color:#8d9bbd;background:rgba(255,255,255,.03)}
+  .trbtn[aria-pressed="false"] .dp{background:#5d6a8c;box-shadow:none}
+  .trbtn b{font-weight:750;letter-spacing:.02em}
+  .trtag{
+    font-size:9.5px;font-weight:800;letter-spacing:.06em;padding:1px 4px;border-radius:4px;
+    background:rgba(120,150,255,.18);border:1px solid rgba(140,165,255,.32);color:#c3ccf7;
+  }
+  .trnote{font-size:11px;color:#7f8cb0;font-variant-numeric:tabular-nums}
+  .ko-line{
+    display:none;font-size:12px;line-height:1.46;font-weight:500;letter-spacing:-.01em;
+    color:#a5b4fc;margin-top:3px;word-break:keep-all;overflow-wrap:anywhere;
+  }
+  .ko-line.shown{display:block}
+  .ko-line.sub{
+    font-size:10.5px;color:#c4c8e0;margin-top:1px;font-weight:500;display:none;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  }
+  .ko-line.sub.shown{display:block}
+  .ko-line:not(.sub)::before{
+    content:"KO";font-size:8.5px;font-weight:800;letter-spacing:.06em;color:#7d8cc4;
+    border:1px solid rgba(130,155,240,.3);border-radius:3px;padding:0 3px;margin-right:5px;
+    vertical-align:1px;
+  }
+  .hl .ko-line{font-size:12px;color:#c3c9f7;margin-top:4px;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+  .hl .ko-line.shown{display:-webkit-box}
+  .row-head .lblwrap{display:flex;flex-direction:column;gap:1px;min-width:0;flex:1 1 auto}
+  .row-head .lblwrap .lbl{align-self:flex-start;max-width:100%}
+
   /* ---------- controls ---------- */
   .controls{display:flex;flex-direction:column;gap:11px;margin-bottom:16px}
   .searchbox{position:relative}
@@ -578,6 +610,12 @@
           <span class="si" aria-hidden="true">🔍</span>
           <input id="search" type="search" inputmode="search" placeholder="키워드 검색 (예: 비트코인, Fed, 대선)" aria-label="키워드 검색" autocomplete="off">
           <button class="clearbtn" id="clearSearch" type="button" aria-label="검색어 지우기">✕</button>
+        </div>
+        <div class="ctrlline">
+          <button type="button" class="chip trbtn" id="trToggle" aria-pressed="true" title="영어 이슈 제목 아래에 한국어 번역을 함께 표시합니다">
+            <span class="trtag" aria-hidden="true">KO</span> 한국어 번역 <span class="dp" aria-hidden="true"></span><b id="trState">ON</b>
+          </button>
+          <span class="trnote" id="trNote"></span>
         </div>
         <div class="chips" id="chips" role="group" aria-label="카테고리 필터"></div>
         <div class="tabs" id="tabs" role="tablist" aria-label="정렬"></div>
@@ -1280,8 +1318,323 @@
   var el = {};
   ['grid', 'chips', 'tabs', 'search', 'clearSearch', 'polyRefresh', 'updatedTime', 'statEvents',
    'statVol', 'statFav', 'highlights', 'resultLine', 'noteLine', 'toast', 'sheet', 'sheetText',
-   'sheetClose'].forEach(function (id) { el[id] = document.getElementById(id); });
+   'sheetClose', 'trToggle', 'trState', 'trNote'].forEach(function (id) { el[id] = document.getElementById(id); });
   el.refreshBtn = el.polyRefresh;
+
+  /* =========================================================================
+     한국어 번역 (en → ko) — 제목·후보 라벨을 원문 바로 아래 보조색 줄로 표시
+     · localStorage 캐시(honey_ko_cache_v1)로 중복 호출 차단
+     · 1순위 translate.googleapis.com(gtx, \n 배치) → 2순위 clients5.google.com(다중 q)
+       → 3순위 MyMemory(CORS *) 순으로 자동 폴백
+     · 화면에 보이는 항목부터 작은 배치(9개)로 나눠 순차 요청해 429 회피
+     ========================================================================= */
+  var TR_CACHE_KEY = 'honey_ko_cache_v1';
+  var TR_ON_KEY = 'honey_ko_on_v1';
+  var TR_CACHE_MAX = 2000;
+  var TR_BATCH = 9;
+  var GTX_URL = 'https://translate.googleapis.com/translate_a/single';
+  var G5_URL = 'https://clients5.google.com/translate_a/t';
+  var MM_URL = 'https://api.mymemory.translated.net/get';
+
+  var tr = {
+    on: true,
+    cache: {},
+    q: [], seen: {}, busy: false, timer: null, scrollT: null,
+    gap: 600, fails: 0, dead: false, saveT: null
+  };
+  (function () {
+    try { tr.on = localStorage.getItem(TR_ON_KEY) !== '0'; } catch (e) { tr.on = true; }
+    try {
+      var raw = localStorage.getItem(TR_CACHE_KEY);
+      var obj = raw ? JSON.parse(raw) : null;
+      if (obj && typeof obj === 'object' && !Array.isArray(obj)) {
+        Object.keys(obj).forEach(function (k) {
+          if (k && typeof obj[k] === 'string' && obj[k]) tr.cache[k] = obj[k];
+        });
+      }
+    } catch (e2) { tr.cache = {}; }
+  })();
+
+  function trKey(s) { return String(s == null ? '' : s).replace(/\s+/g, ' ').trim(); }
+
+  function saveTrCache() {
+    if (tr.saveT) clearTimeout(tr.saveT);
+    tr.saveT = setTimeout(function () {
+      tr.saveT = null;
+      try {
+        var keys = Object.keys(tr.cache);
+        if (keys.length > TR_CACHE_MAX) {
+          var keep = {};
+          keys.slice(keys.length - TR_CACHE_MAX).forEach(function (k) { keep[k] = tr.cache[k]; });
+          tr.cache = keep;
+        }
+        localStorage.setItem(TR_CACHE_KEY, JSON.stringify(tr.cache));
+      } catch (e) { /* 용량·사생활 모드로 저장 불가하면 그냥 넘어감 */ }
+    }, 400);
+  }
+
+  function trKo(s) {
+    var k = trKey(s);
+    return k ? (tr.cache[k] || '') : '';
+  }
+
+  /* 제목·후보 라벨 아래에 들어갈 한국어 줄. 번역이 아직 없으면 빈 줄(숨김)로 두고
+     번역이 도착하면 글자만 채워 넣는다(카드 리렌더 없이). */
+  function koLine(s, cls) {
+    if (!tr.on) return '';
+    var k = trKey(s);
+    if (!k || k.length < 3 || !/[A-Za-z]/.test(k)) return '';
+    if (/^(yes|no|over|under|up|down|other)$/i.test(k)) return '';
+    var ko = tr.cache[k];
+    var sub = cls === 'sub';
+    return '<span class="ko-line' + (sub ? ' sub' : '') + (ko ? ' shown' : ' pending') +
+      '" data-ko="' + esc(k) + '">' + (ko ? esc(ko) : '') + '</span>';
+  }
+
+  function fillKo() {
+    if (!tr.on) return 0;
+    var nodes = document.querySelectorAll('[data-ko]');
+    var n = 0;
+    for (var i = 0; i < nodes.length; i++) {
+      var k = nodes[i].getAttribute('data-ko');
+      var v = k ? tr.cache[k] : '';
+      if (!v) continue;
+      var txt = v;
+      if (nodes[i].textContent !== txt) nodes[i].textContent = txt;
+      if (!nodes[i].classList.contains('shown')) {
+        nodes[i].classList.add('shown');
+        nodes[i].classList.remove('pending');
+      }
+      n++;
+    }
+    return n;
+  }
+
+  function trPendingCount() {
+    var n = 0;
+    Object.keys(tr.seen).forEach(function (k) { if (!tr.cache[k]) n++; });
+    return n;
+  }
+
+  function trNote(msg) {
+    if (!el.trNote) return;
+    if (!tr.on) { el.trNote.textContent = ''; return; }
+    if (msg) { el.trNote.textContent = msg; return; }
+    var p = trPendingCount();
+    el.trNote.textContent = p ? '번역 중 ' + p + '개…' : '';
+  }
+
+  function enqueueKo(keys, prio) {
+    var added = 0;
+    (keys || []).forEach(function (raw) {
+      var k = trKey(raw);
+      if (!k || tr.seen[k] || tr.cache[k]) return;
+      tr.seen[k] = 1;
+      tr.q.push({ k: k, p: prio || 0 });
+      added++;
+    });
+    if (!added) return 0;
+    tr.q.sort(function (a, b) { return a.p - b.p; });
+    kickKo();
+    return added;
+  }
+
+  /* 렌더된 카드 중 화면에 보이는 것(상단 요약 카드 + 상위 8개)을 먼저, 나머지는 뒤 순서로 */
+  function collectKo() {
+    if (!tr.on) return;
+    var nodes = document.querySelectorAll('[data-ko]');
+    if (!nodes.length) return;
+    var vh = window.innerHeight || 800;
+    var hi = [], lo = [], titleIdx = 0;
+    for (var i = 0; i < nodes.length; i++) {
+      var k = nodes[i].getAttribute('data-ko');
+      if (!k || tr.cache[k]) continue;
+      var isSub = nodes[i].classList.contains('sub');
+      if (!isSub) titleIdx++;
+      var r = nodes[i].getBoundingClientRect();
+      var near = r.top < vh * 1.15 && r.bottom > -160;
+      /* 제목(요약 카드 + 상위 15개)은 먼저, 후보 라벨·아래쪽 카드는 뒤에 */
+      if (!isSub && (titleIdx <= 15 || near)) hi.push(k);
+      else if (near && hi.length < 18) hi.push(k);
+      else lo.push(k);
+    }
+    enqueueKo(hi, 0);
+    enqueueKo(lo, 2);
+    trNote();
+  }
+
+  function kickKo() {
+    if (!tr.on || tr.busy || tr.dead || tr.timer) return;
+    tr.timer = setTimeout(function () { tr.timer = null; flushKo(); }, 50);
+  }
+
+  function flushKo() {
+    if (!tr.on || tr.busy || tr.dead) { trNote(); return; }
+    var batch = [], chars = 0, guard = tr.q.length;
+    while (tr.q.length && batch.length < TR_BATCH && guard-- > 0) {
+      var it = tr.q.shift();
+      if (!it || tr.cache[it.k]) continue;
+      if (batch.length && chars + it.k.length > 1400) { tr.q.unshift(it); break; }
+      batch.push(it.k);
+      chars += it.k.length + 1;
+    }
+    if (!batch.length) { trNote(); return; }
+    tr.busy = true;
+    translateKoBatch(batch).then(function (map) {
+      var got = 0;
+      batch.forEach(function (k) {
+        if (map[k]) { tr.cache[k] = map[k]; got++; }
+      });
+      tr.busy = false;
+      if (got) { saveTrCache(); fillKo(); }
+      if (got < batch.length) {
+        batch.forEach(function (k) { if (!tr.cache[k]) delete tr.seen[k]; });
+        tr.fails = got ? 0 : tr.fails + 1;
+        tr.gtxFail = (tr.gtxFail || 0) + 1;
+        if (tr.gtxFail >= 2) tr.gtxOff = true;   // gtx가 계속 막히면 당분간 건너뜀
+        tr.gap = Math.min(3000, Math.round(tr.gap * 1.7));
+        if (tr.fails >= 4) {
+          tr.dead = true;
+          trNote('번역 서버가 잠시 응답하지 않아요 · 새로고침하면 다시 시도합니다');
+          return;
+        }
+      } else {
+        tr.fails = 0;
+        tr.gap = Math.max(450, Math.round(tr.gap * 0.92));
+      }
+      trNote();
+      if (tr.q.length) tr.timer = setTimeout(function () { tr.timer = null; flushKo(); }, tr.gap);
+    });
+  }
+
+  function trJson(url, ms) {
+    var ctrl = ('AbortController' in window) ? new AbortController() : null;
+    var timer = setTimeout(function () { if (ctrl) ctrl.abort(); }, ms || 9000);
+    return fetch(url, { mode: 'cors', credentials: 'omit', signal: ctrl ? ctrl.signal : undefined })
+      .then(function (r) {
+        clearTimeout(timer);
+        if (!r.ok) throw new Error('HTTP ' + r.status);
+        return r.json();
+      }, function (e) { clearTimeout(timer); throw e; });
+  }
+
+  function cleanKo(s, src) {
+    var t = String(s == null ? '' : s).replace(/\s+/g, ' ').trim();
+    if (!t) return '';
+    if (/MYMEMORY WARNING|QUERY LENGTH LIMIT|INVALID LANGUAGE PAIR|TOO MANY REQUESTS/i.test(t)) return '';
+    t = t.replace(/^[\s"'“”‘’]+|[\s"'“”‘’]+$/g, '').trim();
+    if (!t) return '';
+    if (src && t.toLowerCase() === String(src).toLowerCase()) return '';
+    return t;
+  }
+
+  /* 1순위: translate.googleapis.com gtx — 여러 줄을 \n으로 묶어 한 번에 */
+  function tryGtx(lines) {
+    var url = GTX_URL + '?client=gtx&sl=en&tl=ko&dt=t&q=' + encodeURIComponent(lines.join('\n'));
+    return trJson(url).then(function (j) {
+      var seg = j && j[0];
+      if (!seg || !seg.length) return null;
+      var out = seg.map(function (s) { return (s && s[0]) ? s[0] : ''; }).join('');
+      var parts = out.split('\n').map(function (s) { return s.trim(); });
+      if (parts.length !== lines.length) return null;          // 줄 수 불일치 → 안전하게 다음 경로
+      if (parts.some(function (p) { return !p; })) return null;
+      return parts;
+    }).catch(function () { return null; });
+  }
+
+  /* 2순위: clients5.google.com (다중 q) — 줄 수가 그대로 돌아와 배치 매핑이 안정적 */
+  function tryG5(lines) {
+    var qs = lines.map(function (l) { return 'q=' + encodeURIComponent(l); }).join('&');
+    var url = G5_URL + '?client=dict-chrome-ex&sl=en&tl=ko&' + qs;
+    return trJson(url).then(function (j) {
+      if (!j) return null;
+      var arr = Array.isArray(j) ? j : [j];
+      arr = arr.map(function (x) { return Array.isArray(x) ? x[0] : x; });
+      if (arr.length === 1 && lines.length > 1) {
+        var sp = String(arr[0] || '').split('\n');
+        return sp.length === lines.length ? sp : null;
+      }
+      if (arr.length !== lines.length) return null;
+      return arr.map(function (s) { return String(s == null ? '' : s); });
+    }).catch(function () { return null; });
+  }
+
+  /* 3순위: MyMemory — 한 줄씩, 실패한 줄만 빈 값으로 남김 */
+  function tryMM(lines) {
+    var out = [], i = 0;
+    function step() {
+      if (i >= lines.length) return Promise.resolve(out);
+      var src = lines[i++];
+      var url = MM_URL + '?q=' + encodeURIComponent(src.slice(0, 480)) + '&langpair=en%7Cko';
+      return trJson(url, 10000).then(function (j) {
+        var t = j && j.responseData ? j.responseData.translatedText : '';
+        out.push(cleanKo(t, src));
+      }, function () { out.push(''); }).then(function () {
+        return new Promise(function (res) { setTimeout(res, 140); }).then(step);
+      });
+    }
+    return step().then(function (arr) { return arr; }, function () { return null; });
+  }
+
+  function translateKoBatch(lines) {
+    return (tr.gtxOff ? Promise.resolve(null) : tryGtx(lines)).then(function (r) {
+      if (r) return r;
+      return tryG5(lines);
+    }).then(function (r) {
+      if (r) return r;
+      return tryMM(lines);
+    }).catch(function () { return null; }).then(function (arr) {
+      var map = {};
+      if (!arr) return map;
+      lines.forEach(function (k, i) {
+        var v = cleanKo(arr[i], k);
+        if (v) map[k] = v;
+      });
+      return map;
+    });
+  }
+
+  function syncTrToggle() {
+    if (!el.trToggle) return;
+    el.trToggle.setAttribute('aria-pressed', tr.on ? 'true' : 'false');
+    if (el.trState) el.trState.textContent = tr.on ? 'ON' : 'OFF';
+    el.trToggle.title = tr.on
+      ? '영어 이슈 제목 아래에 한국어 번역을 함께 표시합니다 (끄려면 누르세요)'
+      : '한국어 번역을 꺼 두었습니다 (켜려면 누르세요)';
+  }
+
+  if (el.trToggle) {
+    el.trToggle.addEventListener('click', function () {
+      tr.on = !tr.on;
+      try { localStorage.setItem(TR_ON_KEY, tr.on ? '1' : '0'); } catch (e) { /* 저장 불가 */ }
+      if (tr.on) { tr.dead = false; tr.fails = 0; tr.gap = 600; tr.gtxFail = 0; tr.gtxOff = false; }
+      syncTrToggle();
+      render();
+      trNote();
+    });
+  }
+  syncTrToggle();
+
+  /* 스크롤해서 새로 보이는 카드는 대기열 맨 앞으로 당겨 먼저 번역 */
+  window.addEventListener('scroll', function () {
+    if (!tr.on || !tr.q.length || tr.scrollT) return;
+    tr.scrollT = setTimeout(function () {
+      tr.scrollT = null;
+      var vh = window.innerHeight || 800;
+      var nodes = document.querySelectorAll('[data-ko]');
+      var front = {};
+      for (var i = 0; i < nodes.length; i++) {
+        var k = nodes[i].getAttribute('data-ko');
+        if (!k || tr.cache[k] || front[k]) continue;
+        var r = nodes[i].getBoundingClientRect();
+        if (r.top < vh && r.bottom > 0) front[k] = 1;
+      }
+      if (!Object.keys(front).length) return;
+      var first = [], rest = [];
+      tr.q.forEach(function (it) { (front[it.k] ? first : rest).push(it); });
+      tr.q = first.concat(rest);
+    }, 220);
+  }, { passive: true });
 
   function esc(s) {
     return String(s == null ? '' : s)
@@ -1618,6 +1971,7 @@
       html += '<button type="button" class="hl" data-jump="' + esc(byVol.id) + '">' +
         '<div class="hl-k">🏆 24시간 거래량 1위</div>' +
         '<p class="hl-t">' + esc(byVol.title) + '</p>' +
+        koLine(byVol.title) +
         '<div class="hl-b"><b>' + money(byVol.vol24) + '</b><span>24시간</span>' +
         '<span class="chg ' + chgClass(byVol.top.change) + '">' + chgArrow(byVol.top.change) + ' ' +
         (byVol.top.change === null ? '변동 없음' : chgText(byVol.top.change)) + '</span></div>' +
@@ -1629,6 +1983,7 @@
       html += '<button type="button" class="hl sway" data-jump="' + esc(bySwing.id) + '">' +
         '<div class="hl-k">⚡ 오늘 최대 급변동</div>' +
         '<p class="hl-t">' + esc(bySwing.title) + '</p>' +
+        koLine(bySwing.title) +
         '<div class="hl-b"><b class="chg ' + chgClass(bySwing.swing.change) + '" style="background:none;border:0;padding:0;font-size:19px">' +
         chgArrow(bySwing.swing.change) + ' ' + chgText(bySwing.swing.change) + '</b>' +
         '<span>' + esc(pctText(bySwing.swing.yes)) + '까지 ' + (bySwing.swing.change > 0 ? '상승' : '하락') + '</span></div>' +
@@ -1645,7 +2000,8 @@
     var cHtml = c === null || c === undefined ? '<span class="c flat">–</span>'
       : '<span class="c ' + chgClass(c) + '">' + chgArrow(c) + Math.abs(c * 100).toFixed(1) + '</span>';
     return '<div class="row">' +
-      '<div class="row-head"><span class="lbl" title="' + esc(m.question) + '">' + esc(m.label) + '</span>' +
+      '<div class="row-head"><span class="lblwrap"><span class="lbl" title="' + esc(m.question) + '">' + esc(m.label) + '</span>' +
+      koLine(m.label, 'sub') + '</span>' +
       '<span class="val"><span>' + pctText(m.yes) + '</span>' + cHtml + '</span></div>' +
       '<div class="minibar"><i style="width:' + w + '%"></i></div>' +
       '</div>';
@@ -1659,7 +2015,8 @@
       return '<div class="prob-single">' +
         '<div class="prob-head">' +
         '<div><div class="pct">' + pctText(m.yes).replace('%', '') + '<small>%</small></div>' +
-        '<div class="pct-label">' + (m.label && m.label !== ev.title ? esc(m.label) : 'Yes 확률') + '</div></div>' +
+        '<div class="pct-label">' + (m.label && m.label !== ev.title ? esc(m.label) : 'Yes 확률') + '</div>' +
+        (m.label && m.label !== ev.title ? koLine(m.label, 'sub') : '') + '</div>' +
         chgBadgeHtml(m.change) +
         '</div>' +
         '<div class="bar"><i style="width:' + w + '%"></i></div>' +
@@ -1686,6 +2043,7 @@
       '<button type="button" class="star" data-act="fav" aria-pressed="' + fav + '" aria-label="관심 저장">' + (fav ? '★' : '☆') + '</button>' +
       '</div>' +
       '<h3 class="card-title">' + esc(ev.title) + '</h3>' +
+      koLine(ev.title) +
       '<div class="meta">' +
       '<span>누적 ' + money(ev.volume) + '</span>' +
       '<span class="dot">·</span>' +
@@ -1741,6 +2099,7 @@
       (state.q ? ' · “' + esc(state.q) + '”' : '') +
       (state.sort === 'fav' && list.some(function (e) { return e.snapshotOnly; }) ? ' <span class="note">(저장 시점 기준 일부 표시)</span>' : '');
     el.noteLine.textContent = state.lastLoaded ? '갱신 ' + state.lastLoaded.toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' }) : '';
+    collectKo();
   }
 
   function buildUrl(limit) {
@@ -1836,7 +2195,10 @@
     el.search.focus();
     render();
   });
-  el.refreshBtn.addEventListener('click', function () { load(); });
+  el.refreshBtn.addEventListener('click', function () {
+    tr.dead = false; tr.fails = 0; tr.gap = 600; tr.gtxFail = 0; tr.gtxOff = false;
+    load();
+  });
 
   el.highlights.addEventListener('click', function (e) {
     var b = e.target.closest('[data-jump]');
@@ -1896,7 +2258,12 @@
   window.PolyScanner = {
     ensure: function () { if (!state.loaded && !state.loading) load(); },
     refresh: load,
-    loaded: function () { return state.loaded; }
+    loaded: function () { return state.loaded; },
+    ko: function () {
+      return { on: tr.on, cached: Object.keys(tr.cache).length, pending: tr.q.length,
+               dead: tr.dead, fails: tr.fails };
+    },
+    koCache: function () { return tr.cache; }
   };
 })();
 </script>
