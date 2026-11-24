@@ -455,6 +455,19 @@
   }
   .symchip:hover{background:rgba(255,255,255,.09);color:#fff}
   .symchip.on{background:rgba(255,209,102,.14);border-color:rgba(255,209,102,.4);color:#ffdd8f}
+  .symchip.fav{background:rgba(255,209,102,.1);border-color:rgba(255,209,102,.34);color:#ffe3a8}
+  .symchip.fav.on{background:rgba(255,209,102,.22);border-color:rgba(255,209,102,.6);color:#fff1c9}
+  .symchip .favstar{color:#ffd166;margin-right:5px;font-size:11px;vertical-align:1px;display:inline-block;width:auto;height:auto;border:0;background:none}
+  .symchip .rm{display:inline-block;margin-left:7px;padding:0 1px;color:#ff9fab;font-size:13px;line-height:1;opacity:.8;border-radius:4px}
+  .symchip .rm:hover{opacity:1;background:rgba(255,107,129,.16)}
+  .symsep{flex:0 0 auto;width:1px;align-self:stretch;margin:4px 3px;background:rgba(255,255,255,.16)}
+  .favbtn{font-size:11px;padding:5px 10px;border-radius:999px;white-space:nowrap}
+  .favbtn.on{background:rgba(255,209,102,.18);border-color:rgba(255,209,102,.48);color:#ffdd8f}
+  .aliasrow{display:flex;gap:6px;align-items:center;margin:0 0 10px;flex-wrap:wrap}
+  .aliasrow[hidden]{display:none}
+  .aliasrow label{font-size:11px;color:var(--muted);white-space:nowrap}
+  .aliasrow .input{max-width:190px;min-height:34px;padding:7px 10px;font-size:12.5px}
+  .aliasrow .btn{padding:7px 11px;font-size:11.5px}
 
   .segline{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin:0 0 10px}
   .segline .symchip{padding:6px 11px;font-size:11.5px;border-radius:9px}
@@ -675,17 +688,22 @@
 
       <div class="charthead">
         <b id="krChartTitle">삼성전자</b>
-        <span class="small muted" id="krChartMeta">KRX:005930</span>
+        <span class="small muted" id="krChartMeta">종목코드 005930</span>
+        <button type="button" class="btn favbtn" id="krFavBtn" aria-pressed="false">☆ 즐겨찾기 추가</button>
         <span class="chartlinks">
           <a class="btn" id="krStockLink" href="https://m.stock.naver.com/domestic/stock/005930/total" target="_blank" rel="noopener noreferrer">네이버페이 증권 ↗</a>
           <a class="btn" id="krChartLink" href="https://finance.naver.com/item/main.naver?code=005930" target="_blank" rel="noopener noreferrer">네이버금융 ↗</a>
+          <a class="btn" id="krTvLink" href="https://www.tradingview.com/chart/?symbol=KRX:005930" target="_blank" rel="noopener noreferrer">트레이딩뷰 ↗</a>
         </span>
       </div>
 
+      <div class="aliasrow" id="krAliasRow" hidden>
+        <label for="krAliasInput">종목 이름</label>
+        <input class="input" id="krAliasInput" maxlength="20" placeholder="예: 기아" autocomplete="off" aria-label="종목 이름">
+        <button type="button" class="btn" id="krAliasSave">이름 저장</button>
+      </div>
+
       <div class="segline" id="krViewBtns">
-        <button type="button" class="symchip on" data-krview="naver">기본 차트</button>
-        <button type="button" class="symchip" data-krview="tv">트레이딩뷰</button>
-        <span class="segsep"></span>
         <span id="krNaverCtl" class="segline" style="margin:0">
           <button type="button" class="symchip on" data-krper="day">일</button>
           <button type="button" class="symchip" data-krper="week">주</button>
@@ -700,11 +718,6 @@
         <img id="krNaverImg" alt="국내주식 차트" loading="lazy">
       </div>
       <div class="small muted" id="krNaverNote" style="margin:7px 2px 12px">네이버 금융 차트 · 새로고침하면 최신 차트로 다시 불러옵니다</div>
-
-      <div class="chartbox" id="krChart" hidden>
-        <div class="tv-wrap"></div>
-        <div class="chart-fallback">트레이딩뷰 차트를 불러오지 못했어요.<br><a id="krFallbackLink" href="https://finance.naver.com/item/main.naver?code=005930" target="_blank" rel="noopener noreferrer" style="color:#9fb6ff">네이버증권에서 직접 보기 ↗</a></div>
-      </div>
     </section>
 
     <!-- ================= 미국주식 ================= -->
@@ -723,6 +736,7 @@
       <div class="charthead">
         <b id="usChartTitle">S&amp;P500 (SPY)</b>
         <span class="small muted" id="usChartMeta">AMEX:SPY</span>
+        <button type="button" class="btn favbtn" id="usFavBtn" aria-pressed="false">☆ 즐겨찾기 추가</button>
         <span class="chartlinks">
           <a class="btn" id="usChartLink" href="https://finance.yahoo.com/quote/SPY" target="_blank" rel="noopener noreferrer">야후 파이낸스 ↗</a>
           <a class="btn" id="usTvLink" href="https://www.tradingview.com/symbols/AMEX-SPY/" target="_blank" rel="noopener noreferrer">트레이딩뷰 ↗</a>
@@ -1112,6 +1126,7 @@
       if (window.PhotoAlbum) window.PhotoAlbum.bindRemote();
       if (window.TradeJournal) window.TradeJournal.bindRemote();
       if (window.TradeNotes) window.TradeNotes.bindRemote();
+      if (window.StockCharts) window.StockCharts.bindRemote();
     } catch (e) {
       fb.ready = false;
       setSync('off');
@@ -2550,7 +2565,11 @@
 
 <script>
 /* =========================================================================
-   3) 국내주식 / 4) 미국주식 — TradingView 공식 임베드 위젯
+   3) 국내주식 — 네이버 금융 차트 / 4) 미국주식 — TradingView 임베드
+   · 국내주식은 로그인 없이 바로 보이는 네이버 금융 차트만 쓴다
+     (일/주/월 × 라인/캔들, 지수 KOSPI·KOSDAQ은 네이버 당일 차트)
+   · 국내주식·미국주식 모두 즐겨찾기(★)를 지정해 칩 목록 맨 앞에 고정한다
+     저장은 localStorage + Firebase(state/favorites) 실시간 동기화
    ========================================================================= */
 (function () {
   'use strict';
@@ -2581,12 +2600,17 @@
     { t: 'IONQ', n: '아이온큐', tv: 'NYSE:IONQ' }
   ];
   var st = {
-    kr: { sel: '005930', built: false, tape: false, view: 'naver', per: 'day', style: 'area', tvSym: null },
+    kr: { sel: '005930', built: false, per: 'day', style: 'area' },
     us: { sel: 'SPY', built: false, tape: false }
   };
 
+  /* 즐겨찾기: localStorage + Firebase rooms/<room>/state/favorites */
+  var FAV_LS = { kr: 'honey.krFavorites.v1', us: 'honey.usFavorites.v1', stamp: 'honey.favoritesStamp.v1' };
+  var fav = { kr: [], us: [], stamp: 0, bound: false };
+
   function $(id) { return document.getElementById(id); }
   function esc(s) { return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
+  function fkey(kind) { return kind === 'kr' ? 'c' : 't'; }
   function krItem(code) { for (var i = 0; i < KR.length; i++) if (KR[i].c === code) return KR[i]; return null; }
   function usItem(t) { for (var i = 0; i < US.length; i++) if (US[i].t === t) return US[i]; return null; }
   function krTv(code) { return 'KRX:' + code; }
@@ -2595,36 +2619,173 @@
     if (it && it.idx) return 'https://finance.naver.com/sise/sise_index.naver?code=' + encodeURIComponent(code);
     return 'https://finance.naver.com/item/main.naver?code=' + encodeURIComponent(code);
   }
+  function krName(code) {
+    var it = krItem(code);
+    if (it && it.n) return it.n;
+    return favName('kr', code) || code;
+  }
 
+  /* ---------------- 즐겨찾기 저장·동기화 ---------------- */
+  function normFav(v, which) {
+    var out = [];
+    if (!v) return out;
+    var arr;
+    if (Array.isArray(v)) arr = v;
+    else if (typeof v === 'object') {
+      arr = Object.keys(v).sort(function (a, b) { return (Number(a) || 0) - (Number(b) || 0); })
+        .map(function (k) { return v[k]; });
+    } else return out;
+    arr.forEach(function (it) {
+      if (!it) return;
+      var id = typeof it === 'string' ? it : (it[which] || it.code || it.ticker || '');
+      var nm = (typeof it === 'object' && (it.n || it.name)) || '';
+      id = String(id || '').trim();
+      if (!id) return;
+      for (var i = 0; i < out.length; i++) if (out[i][which] === id) return;
+      var o = {}; o[which] = id; o.n = String(nm || id);
+      out.push(o);
+    });
+    return out;
+  }
+  function favLoad() {
+    ['kr', 'us'].forEach(function (k) {
+      var list = [];
+      try { list = normFav(JSON.parse(localStorage.getItem(FAV_LS[k]) || '[]'), fkey(k)); } catch (e) { list = []; }
+      fav[k] = list;
+    });
+    try { fav.stamp = Number(localStorage.getItem(FAV_LS.stamp)) || 0; } catch (e) { fav.stamp = 0; }
+  }
+  function favCache() {
+    try {
+      localStorage.setItem(FAV_LS.kr, JSON.stringify(fav.kr));
+      localStorage.setItem(FAV_LS.us, JSON.stringify(fav.us));
+      localStorage.setItem(FAV_LS.stamp, String(fav.stamp));
+    } catch (e) { /* 저장 불가 */ }
+  }
+  function favPush() {
+    fav.stamp = Date.now();
+    favCache();
+    var f = window.__fb;
+    if (!f || !f.ready || !f.root) return;
+    try {
+      var p = f.root.child('favorites').set({
+        krFavorites: fav.kr,
+        usFavorites: fav.us,
+        updatedAt: fav.stamp
+      });
+      if (p && p.catch) p.catch(function () { window.__toast('즐겨찾기는 이 기기에 저장했어요 · 서버 동기화는 실패'); });
+    } catch (e) { /* ignore */ }
+  }
+  function favIs(kind, id) {
+    var k = fkey(kind);
+    for (var i = 0; i < fav[kind].length; i++) if (fav[kind][i][k] === id) return true;
+    return false;
+  }
+  function favName(kind, id) {
+    var k = fkey(kind);
+    for (var i = 0; i < fav[kind].length; i++) if (fav[kind][i][k] === id) return fav[kind][i].n || '';
+    return '';
+  }
+  function favAdd(kind, id, name) {
+    if (favIs(kind, id)) return false;
+    var o = {}; o[fkey(kind)] = id; o.n = name || id;
+    fav[kind].push(o);
+    favPush();
+    return true;
+  }
+  function favDel(kind, id) {
+    var k = fkey(kind);
+    var before = fav[kind].length;
+    fav[kind] = fav[kind].filter(function (x) { return x[k] !== id; });
+    if (fav[kind].length === before) return false;
+    favPush();
+    return true;
+  }
+  function favToggle(kind) {
+    var id = kind === 'kr' ? st.kr.sel : st.us.sel;
+    if (favIs(kind, id)) {
+      favDel(kind, id);
+      renderQuick(kind); paintFavBtn(kind);
+      window.__toast('즐겨찾기에서 뺐어요');
+      return false;
+    }
+    var nm = kind === 'kr' ? krName(id) : ((usItem(id) || {}).n || id);
+    favAdd(kind, id, nm);
+    renderQuick(kind); paintFavBtn(kind);
+    window.__toast('즐겨찾기에 추가했어요 · 목록 맨 앞에 고정됩니다');
+    return true;
+  }
+  function paintFavBtn(kind) {
+    var btn = $(kind + 'FavBtn');
+    if (!btn) return;
+    var id = kind === 'kr' ? st.kr.sel : st.us.sel;
+    var on = favIs(kind, id);
+    btn.classList.toggle('on', on);
+    btn.setAttribute('aria-pressed', on ? 'true' : 'false');
+    btn.textContent = on ? '★ 즐겨찾기됨' : '☆ 즐겨찾기 추가';
+    btn.title = on ? '한 번 더 누르면 즐겨찾기에서 빠져요' : '이 종목을 즐겨찾기로 고정해 목록 맨 앞에 둡니다';
+  }
+
+  /* ---------------- 칩 목록: 즐겨찾기 먼저, 기본 추천은 그 뒤 ---------------- */
+  function favoriteChips(kind) {
+    var k = fkey(kind);
+    var sel = kind === 'kr' ? st.kr.sel : st.us.sel;
+    return fav[kind].map(function (f) {
+      var id = f[k];
+      var label = kind === 'kr' ? (f.n || id) : id;
+      var tip = kind === 'kr' && f.n && f.n !== id ? f.n + ' · ' + id : label;
+      return '<button type="button" class="symchip fav' + (sel === id ? ' on' : '') + '" data-' + kind + '="' + esc(id) + '" data-fav="1" title="' + esc(tip + ' · 즐겨찾기') + '">' +
+        '<span class="favstar" aria-hidden="true">★</span>' + esc(label) +
+        '<span class="rm" data-' + kind + '-rm="' + esc(id) + '" role="button" aria-label="' + esc(label) + ' 즐겨찾기 해제">×</span></button>';
+    }).join('');
+  }
   function renderKrQuick() {
     var row = $('krQuick');
     if (!row) return;
-    row.innerHTML = KR.map(function (k) {
+    var on = {};
+    fav.kr.forEach(function (f) { on[f.c] = 1; });
+    var html = favoriteChips('kr');
+    if (fav.kr.length) html += '<span class="symsep" aria-hidden="true"></span>';
+    html += KR.filter(function (k) { return !on[k.c]; }).map(function (k) {
       return '<button type="button" class="symchip' + (st.kr.sel === k.c ? ' on' : '') + '" data-kr="' + k.c + '">' + esc(k.n) + '</button>';
     }).join('');
+    row.innerHTML = html;
   }
   function renderUsQuick() {
     var row = $('usQuick');
     if (!row) return;
-    row.innerHTML = US.map(function (u) {
+    var on = {};
+    fav.us.forEach(function (f) { on[f.t] = 1; });
+    var html = favoriteChips('us');
+    if (fav.us.length) html += '<span class="symsep" aria-hidden="true"></span>';
+    html += US.filter(function (u) { return !on[u.t]; }).map(function (u) {
       return '<button type="button" class="symchip' + (st.us.sel === u.t ? ' on' : '') + '" data-us="' + u.t + '">' + esc(u.t) + '</button>';
     }).join('');
+    row.innerHTML = html;
   }
+  function renderQuick(kind) { if (kind === 'kr') renderKrQuick(); else renderUsQuick(); }
 
-  function naverUrl(code, style, per) {
-    return 'https://ssl.pstatic.net/imgfinance/chart/item/' + style + '/' + per + '/' + code + '.png?t=' + Date.now();
+  /* ---------------- 국내주식 차트 (네이버 금융) ---------------- */
+  function periodName() { return st.kr.per === 'day' ? '일봉' : st.kr.per === 'week' ? '주봉' : '월봉'; }
+  function styleName() { return st.kr.style === 'area' ? '라인' : '캔들'; }
+  function chartShape() {
+    /* 네이버는 '월 + 라인' 이미지를 제공하지 않는다(404) → 월봉은 캔들로 대신 보여 준다 */
+    if (st.kr.per === 'month' && st.kr.style === 'area') {
+      return { per: 'month', style: 'candle', note: '월봉 라인은 네이버에서 제공하지 않아 캔들로 보여 줍니다' };
+    }
+    return { per: st.kr.per, style: st.kr.style, note: '' };
   }
-
-  function paintKrView() {
+  function naverChartUrl(code, it) {
+    var t = '?t=' + Date.now();
+    if (it && it.idx) return 'https://ssl.pstatic.net/imgfinance/chart/mobile/day/' + encodeURIComponent(code) + '_end.png' + t;
+    var cs = chartShape();
+    return 'https://ssl.pstatic.net/imgfinance/chart/item/' + cs.style + '/' + cs.per + '/' + encodeURIComponent(code) + '.png' + t;
+  }
+  function paintKrChart() {
     var code = st.kr.sel;
     var it = krItem(code);
     var isIdx = !!(it && it.idx);
-    var view = isIdx ? 'tv' : st.kr.view;
-    var box = $('krNaverBox'), img = $('krNaverImg'), tv = $('krChart'), ctl = $('krNaverCtl'), note = $('krNaverNote');
-
-    Array.prototype.forEach.call(document.querySelectorAll('#krViewBtns [data-krview]'), function (b) {
-      b.classList.toggle('on', b.getAttribute('data-krview') === view);
-    });
+    var box = $('krNaverBox'), img = $('krNaverImg'), ctl = $('krNaverCtl'), note = $('krNaverNote');
     Array.prototype.forEach.call(document.querySelectorAll('#krViewBtns [data-krper]'), function (b) {
       b.classList.toggle('on', b.getAttribute('data-krper') === st.kr.per);
     });
@@ -2634,46 +2795,63 @@
     if (ctl) {
       ctl.style.opacity = isIdx ? '.38' : '1';
       ctl.style.pointerEvents = isIdx ? 'none' : 'auto';
+      ctl.title = isIdx ? '지수는 네이버 당일 차트로 보여 줍니다' : '';
     }
+    if (box) { box.hidden = false; box.classList.remove('broken'); }
+    if (img) {
+      img.onload = function () { if (box) box.classList.remove('broken'); };
+      img.onerror = function () {
+        if (box) box.classList.add('broken');
+        if (note) note.textContent = '차트를 불러오지 못했어요 · 종목코드를 확인하거나 네이버금융에서 직접 보세요.';
+      };
+      img.alt = krName(code) + ' 차트';
+      img.src = naverChartUrl(code, it);
+    }
+    if (note) {
+      if (isIdx) {
+        note.textContent = krName(code) + ' 지수 · 네이버 금융 당일 차트 · 주/월 차트는 네이버금융에서 볼 수 있어요';
+      } else {
+        note.textContent = '네이버 금융 차트 (' + periodName() + '·' + styleName() + ')' +
+          (chartShape().note ? ' · ' + chartShape().note : '') + ' · 새로고침하면 최신 차트로 다시 불러옵니다';
+      }
+    }
+  }
 
-    if (view === 'naver') {
-      if (box) { box.hidden = false; box.classList.remove('broken'); }
-      if (tv) tv.hidden = true;
-      if (img) {
-        img.onload = function () { if (box) box.classList.remove('broken'); };
-        img.onerror = function () {
-          if (box) box.classList.add('broken');
-          if (note) note.textContent = '차트를 불러오지 못했어요 · 종목코드를 확인하거나 네이버증권에서 직접 보세요.';
-        };
-        img.src = naverUrl(code, st.kr.style, st.kr.per);
-      }
-      if (note) {
-        note.textContent = '네이버 금융 차트 (' + (st.kr.per === 'day' ? '일봉' : st.kr.per === 'week' ? '주봉' : '월봉') +
-          '·' + (st.kr.style === 'area' ? '라인' : '캔들') + ') · 새로고침하면 최신 차트로 다시 불러옵니다';
-      }
-    } else {
-      if (box) box.hidden = true;
-      if (tv) tv.hidden = false;
-      if (st.kr.tvSym !== krTv(code)) {
-        st.kr.tvSym = krTv(code);
-        window.__tvChart('krChart', krTv(code), 'D');
-      }
-      if (note) {
-        note.textContent = isIdx
-          ? '지수는 트레이딩뷰에서 제공합니다 · 트레이딩뷰에 로그인해야 국내 지수 시세가 보입니다.'
-          : '트레이딩뷰 차트 · 국내주식은 트레이딩뷰에 로그인해야 시세가 보입니다.';
-      }
+  function paintAliasRow() {
+    var row = $('krAliasRow'), inp = $('krAliasInput');
+    if (!row) return;
+    var it = krItem(st.kr.sel);
+    var known = !!it && !!it.n && it.n !== it.c;
+    row.hidden = known;
+    if (!known && inp) inp.value = '';
+  }
+  function saveAlias() {
+    var inp = $('krAliasInput');
+    if (!inp) return;
+    var v = (inp.value || '').trim().slice(0, 20);
+    var code = st.kr.sel;
+    var it = krItem(code);
+    if (it && v) it.n = v;
+    if (favIs('kr', code)) {
+      fav.kr.forEach(function (f) { if (f.c === code) f.n = v || code; });
+      favPush();
     }
+    renderKrQuick();
+    var title = $('krChartTitle');
+    if (title) title.textContent = krName(code);
+    paintAliasRow();
+    paintKrChart();
+    window.__toast(v ? '이름을 ‘' + v + '’(으)로 저장했어요' : '이름을 비웠어요 · 종목코드로 표시합니다');
   }
 
   function selectKr(code) {
     st.kr.sel = code;
     var it = krItem(code);
-    var title = $('krChartTitle'), meta = $('krChartMeta'), link = $('krChartLink'), fb = $('krFallbackLink');
-    if (title) title.textContent = it ? it.n : code;
-    if (meta) meta.textContent = (it && it.idx ? 'KRX 지수' : '종목코드 ' + code) + ' · ' + krTv(code);
+    var title = $('krChartTitle'), meta = $('krChartMeta'), link = $('krChartLink'), tvLink = $('krTvLink');
+    if (title) title.textContent = krName(code);
+    if (meta) meta.textContent = (it && it.idx ? '지수 ' : '종목코드 ') + code + ' · ' + krTv(code);
     if (link) link.href = krNaver(code);
-    if (fb) fb.href = krNaver(code);
+    if (tvLink) tvLink.href = 'https://www.tradingview.com/chart/?symbol=' + krTv(code);
     var stockLink = $('krStockLink');
     if (stockLink) {
       stockLink.href = (it && it.idx)
@@ -2681,23 +2859,28 @@
         : 'https://m.stock.naver.com/domestic/stock/' + encodeURIComponent(code) + '/total';
     }
     renderKrQuick();
+    paintFavBtn('kr');
+    paintAliasRow();
     st.kr.built = true;
-    paintKrView();
+    paintKrChart();
   }
 
-  function selectUs(ticker, meta) {
+  function selectUs(ticker) {
     st.us.sel = ticker;
     var it = usItem(ticker);
     var title = $('usChartTitle'), mt = $('usChartMeta'), link = $('usChartLink'), fb = $('usFallbackLink');
-    var tv = (it && it.tv) || (meta && meta.tv) || (/^[A-Z]+:/.test(ticker) ? ticker : 'NASDAQ:' + ticker);
     var plain = ticker.indexOf(':') >= 0 ? ticker.split(':')[1] : ticker;
+    /* 거래소를 모르는 티커는 거래소를 붙이지 않고 넘겨야 트레이딩뷰가 알아서 찾는다
+       (NASDAQ:SOXL처럼 잘못 붙이면 '존재하지 않는 심볼'이 된다) */
+    var tv = (it && it.tv) || (/^[A-Z]+:/.test(ticker) ? ticker : plain);
     if (title) title.textContent = it ? it.n : plain;
-    if (mt) mt.textContent = plain + ' · ' + tv;
+    if (mt) mt.textContent = (tv === plain ? plain : plain + ' · ' + tv);
     if (link) link.href = 'https://finance.yahoo.com/quote/' + encodeURIComponent(plain);
     if (fb) fb.href = 'https://finance.yahoo.com/quote/' + encodeURIComponent(plain);
     var tvLink = $('usTvLink');
     if (tvLink) tvLink.href = 'https://www.tradingview.com/symbols/' + tv.replace(':', '-') + '/';
     renderUsQuick();
+    paintFavBtn('us');
     st.us.built = true;
     window.__tvChart('usChart', tv, 'D');
     if (!st.us.tape) {
@@ -2712,36 +2895,88 @@
   }
   function addUs(ticker) {
     var plain = ticker.indexOf(':') >= 0 ? ticker.split(':')[1] : ticker;
-    var tv = ticker.indexOf(':') >= 0 ? ticker : 'NASDAQ:' + ticker;
     var it = usItem(plain);
     if (!it) {
-      it = { t: plain, n: plain, tv: tv };
+      it = { t: plain, n: plain };
+      if (ticker.indexOf(':') >= 0) it.tv = ticker;
       US.unshift(it);
+    } else if (ticker.indexOf(':') >= 0 && it.tv !== ticker) {
+      it.tv = ticker;
     }
     selectUs(plain);
   }
 
+  /* ---------------- Firebase 실시간 동기화 ---------------- */
+  function applyRemoteFav(v) {
+    var u = Number(v.updatedAt) || 0;
+    if (u <= fav.stamp) return false;
+    fav.kr = normFav(v.krFavorites, 'c');
+    fav.us = normFav(v.usFavorites, 't');
+    fav.stamp = u;
+    favCache();
+    renderKrQuick(); renderUsQuick(); paintFavBtn('kr'); paintFavBtn('us');
+    if (st.kr.built) { var t = $('krChartTitle'); if (t) t.textContent = krName(st.kr.sel); }
+    return true;
+  }
+  function bindRemote() {
+    var f = window.__fb;
+    if (!f || !f.ready || !f.root || fav.bound) return;
+    fav.bound = true;
+    f.root.child('favorites').on('value', function (snap) {
+      var v = snap.val();
+      if (!v || typeof v !== 'object') return;
+      applyRemoteFav(v);
+    });
+  }
+
   function init() {
+    favLoad();
     renderKrQuick();
     renderUsQuick();
+    paintFavBtn('kr');
+    paintFavBtn('us');
     var krQuick = $('krQuick');
     if (krQuick) krQuick.addEventListener('click', function (e) {
+      var rm = e.target.closest('[data-kr-rm]');
+      if (rm) {
+        e.preventDefault();
+        favDel('kr', rm.getAttribute('data-kr-rm'));
+        renderKrQuick(); paintFavBtn('kr');
+        window.__toast('즐겨찾기에서 뺐어요');
+        return;
+      }
       var b = e.target.closest('[data-kr]');
       if (b) selectKr(b.getAttribute('data-kr'));
     });
-    var kb = $('krViewBtns');
-    if (kb) kb.addEventListener('click', function (e) {
-      var v = e.target.closest('[data-krview]');
-      if (v) { st.kr.view = v.getAttribute('data-krview'); paintKrView(); return; }
-      var p = e.target.closest('[data-krper]');
-      if (p) { st.kr.per = p.getAttribute('data-krper'); paintKrView(); return; }
-      var stl = e.target.closest('[data-krstyle]');
-      if (stl) { st.kr.style = stl.getAttribute('data-krstyle'); paintKrView(); return; }
-    });
     var usQuick = $('usQuick');
     if (usQuick) usQuick.addEventListener('click', function (e) {
+      var rm = e.target.closest('[data-us-rm]');
+      if (rm) {
+        e.preventDefault();
+        favDel('us', rm.getAttribute('data-us-rm'));
+        renderUsQuick(); paintFavBtn('us');
+        window.__toast('즐겨찾기에서 뺐어요');
+        return;
+      }
       var b = e.target.closest('[data-us]');
       if (b) selectUs(b.getAttribute('data-us'));
+    });
+    var kb = $('krFavBtn');
+    if (kb) kb.addEventListener('click', function () { favToggle('kr'); });
+    var ub = $('usFavBtn');
+    if (ub) ub.addEventListener('click', function () { favToggle('us'); });
+    var aliasSave = $('krAliasSave');
+    if (aliasSave) aliasSave.addEventListener('click', saveAlias);
+    var aliasInput = $('krAliasInput');
+    if (aliasInput) aliasInput.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter') { e.preventDefault(); saveAlias(); }
+    });
+    var seg = $('krViewBtns');
+    if (seg) seg.addEventListener('click', function (e) {
+      var p = e.target.closest('[data-krper]');
+      if (p) { st.kr.per = p.getAttribute('data-krper'); paintKrChart(); return; }
+      var stl = e.target.closest('[data-krstyle]');
+      if (stl) { st.kr.style = stl.getAttribute('data-krstyle'); paintKrChart(); return; }
     });
     var krForm = $('krForm');
     if (krForm) krForm.addEventListener('submit', function (e) {
@@ -2761,6 +2996,9 @@
       $('usInput').value = '';
       window.__toast(v.split(':').pop() + ' 차트로 전환했어요');
     });
+    bindRemote();
+    var nowTab = window.__tab ? window.__tab() : '';
+    if (nowTab === 'kr' || nowTab === 'us') window.StockCharts.activate(nowTab);
   }
 
   window.StockCharts = {
@@ -2769,9 +3007,13 @@
       if (id === 'us' && !st.us.built) selectUs(st.us.sel);
     },
     reload: function (id) {
-      if (id === 'kr') { st.kr.built = false; st.kr.tvSym = null; selectKr(st.kr.sel); }
+      if (id === 'kr') selectKr(st.kr.sel);
       if (id === 'us') { st.us.built = false; selectUs(st.us.sel); }
-    }
+    },
+    bindRemote: bindRemote,
+    toggleFav: favToggle,
+    select: function (kind, id) { if (kind === 'kr') selectKr(id); else selectUs(id); },
+    favorites: function () { return { kr: fav.kr.slice(), us: fav.us.slice(), stamp: fav.stamp }; }
   };
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
