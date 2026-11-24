@@ -505,6 +505,39 @@
   .symsearch{display:flex;gap:6px;align-items:center}
   .symsearch .input{width:170px;min-height:34px;padding:7px 10px;font-size:12.5px}
   .symsearch .btn{padding:7px 11px}
+  /* ---------- 종목 검색 자동완성 ---------- */
+  .symfield{position:relative;flex:1 1 auto;min-width:0;width:320px}
+  .symfield .input{width:100%}
+  .suggest{
+    position:absolute;z-index:80;left:0;right:0;top:calc(100% + 6px);
+    background:#101a2e;border:1px solid var(--line-strong);border-radius:14px;
+    box-shadow:0 22px 48px -18px rgba(0,0,0,.92);padding:5px;
+    max-height:min(58vh,336px);overflow-y:auto;-webkit-overflow-scrolling:touch;
+  }
+  .suggest[hidden]{display:none}
+  .suggest .sitem{
+    display:flex;align-items:center;gap:2px;width:100%;border-radius:10px;min-height:44px;
+  }
+  .suggest .sitem:hover,.suggest .sitem.on{background:rgba(111,140,255,.18)}
+  .suggest .sitem.on{box-shadow:inset 0 0 0 1px rgba(111,140,255,.42)}
+  .suggest .spick{
+    display:flex;align-items:center;gap:9px;flex:1 1 auto;min-width:0;text-align:left;
+    padding:8px 4px 8px 9px;border:0;border-radius:10px;background:transparent;color:var(--text);
+    font-family:inherit;font-size:inherit;cursor:pointer;min-height:44px;
+  }
+  .suggest .sstar{
+    flex:0 0 auto;width:38px;height:38px;margin-right:5px;border-radius:9px;border:1px solid transparent;
+    background:transparent;color:#8d9bbd;font-size:15px;line-height:1;cursor:pointer;
+  }
+  .suggest .sstar:hover{background:rgba(255,209,102,.12);border-color:rgba(255,209,102,.34);color:#ffd166}
+  .suggest .sstar.on{color:#ffd166}
+  .suggest .stxt{display:flex;flex-direction:column;gap:1px;min-width:0;flex:1 1 auto}
+  .suggest .sn{font-size:13.5px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;letter-spacing:-.02em}
+  .suggest .se{font-size:11px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .suggest .sc{flex:0 0 auto;font-size:12px;font-weight:700;color:#9fb6ff;font-variant-numeric:tabular-nums;letter-spacing:.03em}
+  .suggest .stag{font-size:9.5px;font-weight:800;color:#93a2c8;border:1px solid var(--line);border-radius:5px;padding:1px 4px;margin-left:6px;vertical-align:2px;letter-spacing:0}
+  .suggest .sempty{padding:11px 12px;font-size:12px;color:var(--muted)}
+  .suggest .snote{padding:8px 12px 6px;font-size:10.5px;font-weight:700;color:var(--muted-2)}
 
   /* ---------- photos ---------- */
   .photogrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(142px,1fr));gap:8px}
@@ -576,6 +609,8 @@
     .photogrid{grid-template-columns:repeat(2,minmax(0,1fr))}
     .symsearch .input{width:100%}
     .symsearch{flex:1 1 100%}
+    .symfield{width:100%}
+    .suggest{max-height:min(52vh,300px)}
     .toast{bottom:18px}
   }
   @media (prefers-reduced-motion:reduce){
@@ -676,10 +711,13 @@
     <!-- ================= 국내주식 ================= -->
     <section class="panel" id="panel-kr" role="tabpanel" aria-label="국내주식">
       <div class="ptoolbar">
-        <span class="small muted">종목코드 6자리를 넣으면 바로 차트가 바뀝니다.</span>
+        <span class="small muted">종목명(한글·영문)이나 코드로 찾아 바로 차트를 열 수 있어요.</span>
         <span class="grow"></span>
         <form class="symsearch" id="krForm">
-          <input class="input" id="krInput" inputmode="numeric" maxlength="6" placeholder="종목코드 (예: 005930)" aria-label="국내 종목코드" autocomplete="off">
+          <div class="symfield">
+            <input class="input" id="krInput" maxlength="40" placeholder="종목명(한글·영문) 또는 코드 입력 (예: 기아, Samsung, 005930)" aria-label="국내 주식 검색" autocomplete="off" spellcheck="false" role="combobox" aria-expanded="false" aria-autocomplete="list" aria-controls="krSuggest">
+            <div class="suggest" id="krSuggest" role="listbox" aria-label="국내 주식 검색 결과" hidden></div>
+          </div>
           <button class="btn" type="submit">차트 전환</button>
         </form>
       </div>
@@ -723,10 +761,13 @@
     <!-- ================= 미국주식 ================= -->
     <section class="panel" id="panel-us" role="tabpanel" aria-label="미국주식">
       <div class="ptoolbar">
-        <span class="small muted">티커를 넣으면 바로 차트가 바뀝니다. (예: NVDA)</span>
+        <span class="small muted">종목명(한글·영문)이나 티커로 찾아 바로 차트를 열 수 있어요.</span>
         <span class="grow"></span>
         <form class="symsearch" id="usForm">
-          <input class="input" id="usInput" maxlength="10" placeholder="티커 (예: TSLA)" aria-label="미국 티커" autocomplete="off">
+          <div class="symfield">
+            <input class="input" id="usInput" maxlength="40" placeholder="종목명(한글·영문) 또는 티커 입력 (예: 엔비디아, Apple, NVDA)" aria-label="미국 주식 검색" autocomplete="off" spellcheck="false" role="combobox" aria-expanded="false" aria-autocomplete="list" aria-controls="usSuggest">
+            <div class="suggest" id="usSuggest" role="listbox" aria-label="미국 주식 검색 결과" hidden></div>
+          </div>
           <button class="btn" type="submit">차트 전환</button>
         </form>
       </div>
@@ -2604,6 +2645,108 @@
     us: { sel: 'SPY', built: false, tape: false }
   };
 
+  /* ---------------- 전종목 목록(kr_stocks.json·us_stocks.json) ---------------- */
+  var DB = { krmap: {}, usmap: {}, kralias: {}, usalias: {}, krlist: [], uslist: [], load: {} };
+  function dbReady(kind) { return kind === 'kr' ? DB.krlist.length > 0 : DB.uslist.length > 0; }
+  function loadDb(kind) {
+    if (DB.load[kind]) return DB.load[kind];
+    var url = kind === 'kr' ? './kr_stocks.json' : './us_stocks.json';
+    DB.load[kind] = fetch(url, { headers: { Accept: 'application/json' } })
+      .then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
+      .then(function (j) {
+        var rows = (j && j.items) || [];
+        var map = {};
+        var list = [];
+        rows.forEach(function (row) {
+          var id = String(row[0] || '').toUpperCase();
+          if (!id) return;
+          var it;
+          if (kind === 'kr') {
+            var kd = String(row[3] || 's');
+            it = { c: id, n: String(row[1] || ''), en: String(row[2] || ''), kind: kd, idx: kd === 'i' };
+          } else {
+            var ex = String(row[3] || '');
+            it = { t: id, n: String(row[1] || ''), en: String(row[2] || ''), ex: ex, tv: ex ? ex + ':' + id : '' };
+          }
+          map[id] = it;
+          list.push(it);
+        });
+        if (kind === 'kr') { DB.kralias = (j && j.aliases) || {}; DB.krlist = list; DB.krmap = map; }
+        else { DB.usalias = (j && j.aliases) || {}; DB.uslist = list; DB.usmap = map; }
+        return true;
+      })
+      .catch(function () { return false; });
+    return DB.load[kind];
+  }
+
+  /* 검색용 정규화: 소문자·빈칸·기호를 없애 비교한다 (예: 'Samsung Electronics' = 'samsungelectronics') */
+  function normKey(s) { return String(s == null ? '' : s).toLowerCase().replace(/[\s\-_.,·()\/&'’]/g, ''); }
+
+  function searchKr(q, limit) {
+    var raw = String(q || '').trim();
+    if (!raw) return [];
+    var qn = normKey(raw);
+    var code = raw.toUpperCase().replace(/\s+/g, '');
+    var aliasCode = DB.kralias[raw] || DB.kralias[raw.toLowerCase()] || DB.kralias[qn] || '';
+    var out = [];
+    var seen = {};
+    var all = DB.krlist.length ? DB.krlist : KR;
+    for (var i = 0; i < all.length; i++) {
+      var it = all[i];
+      var id = String(it.c || '').toUpperCase();
+      if (!id || seen[id]) continue;
+      var nk = normKey(it.n), ek = normKey(it.en);
+      var s = -1;
+      if (id === code) s = 0;
+      else if (aliasCode && aliasCode === id) s = 4;
+      else if (it.n && nk === qn) s = 10;
+      else if (it.en && ek === qn) s = 11;
+      else if (it.n && nk.indexOf(qn) === 0) s = 20;
+      else if (it.en && ek.indexOf(qn) === 0) s = 22;
+      else if (id.indexOf(code) === 0) s = 26;
+      else if (it.n && nk.indexOf(qn) > 0) s = 30;
+      else if (it.en && ek.indexOf(qn) > 0) s = 33;
+      else continue;
+      seen[id] = 1;
+      out.push({ id: id, it: it, s: s, o: i });
+    }
+    out.sort(function (a, b) { return a.s - b.s || a.o - b.o; });
+    return out.slice(0, limit || 10);
+  }
+
+  function searchUs(q, limit) {
+    var raw = String(q || '').trim();
+    if (!raw) return [];
+    var qn = normKey(raw);
+    var tick = raw.toUpperCase().replace(/\s+/g, '');
+    var upper = raw === raw.toUpperCase();
+    var aliasCode = DB.usalias[raw] || DB.usalias[raw.toLowerCase()] || DB.usalias[qn] || '';
+    var out = [];
+    var seen = {};
+    var all = DB.uslist.length ? DB.uslist : US;
+    for (var i = 0; i < all.length; i++) {
+      var it = all[i];
+      var id = String(it.t || '').toUpperCase();
+      if (!id || seen[id]) continue;
+      var nk = normKey(it.n), ek = normKey(it.en);
+      var s = -1;
+      if (id === tick) s = upper ? 0 : 25;
+      else if (aliasCode && aliasCode === id) s = 4;
+      else if (it.n && nk === qn) s = 10;
+      else if (it.en && ek === qn) s = 11;
+      else if (id.indexOf(tick) === 0) s = 18;
+      else if (it.n && nk.indexOf(qn) === 0) s = 20;
+      else if (it.en && ek.indexOf(qn) === 0) s = 23;
+      else if (it.n && nk.indexOf(qn) > 0) s = 30;
+      else if (it.en && ek.indexOf(qn) > 0) s = 33;
+      else continue;
+      seen[id] = 1;
+      out.push({ id: id, it: it, s: s, o: i });
+    }
+    out.sort(function (a, b) { return a.s - b.s || a.o - b.o; });
+    return out.slice(0, limit || 10);
+  }
+
   /* 즐겨찾기: localStorage + Firebase rooms/<room>/state/favorites */
   var FAV_LS = { kr: 'honey.krFavorites.v1', us: 'honey.usFavorites.v1', stamp: 'honey.favoritesStamp.v1' };
   var fav = { kr: [], us: [], stamp: 0, bound: false };
@@ -2611,8 +2754,18 @@
   function $(id) { return document.getElementById(id); }
   function esc(s) { return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
   function fkey(kind) { return kind === 'kr' ? 'c' : 't'; }
-  function krItem(code) { for (var i = 0; i < KR.length; i++) if (KR[i].c === code) return KR[i]; return null; }
-  function usItem(t) { for (var i = 0; i < US.length; i++) if (US[i].t === t) return US[i]; return null; }
+  function krItem(code) {
+    var id = String(code == null ? '' : code).toUpperCase();
+    if (DB.krmap[id]) return DB.krmap[id];
+    for (var i = 0; i < KR.length; i++) if (KR[i].c === id) return KR[i];
+    return null;
+  }
+  function usItem(t) {
+    var id = String(t == null ? '' : t).toUpperCase();
+    if (DB.usmap[id]) return DB.usmap[id];
+    for (var i = 0; i < US.length; i++) if (US[i].t === id) return US[i];
+    return null;
+  }
   function krTv(code) { return 'KRX:' + code; }
   function krNaver(code) {
     var it = krItem(code);
@@ -2849,7 +3002,7 @@
     var it = krItem(code);
     var title = $('krChartTitle'), meta = $('krChartMeta'), link = $('krChartLink'), tvLink = $('krTvLink');
     if (title) title.textContent = krName(code);
-    if (meta) meta.textContent = (it && it.idx ? '지수 ' : '종목코드 ') + code + ' · ' + krTv(code);
+    if (meta) meta.textContent = (it && it.idx ? '지수 ' : (it && it.kind === 'e' ? 'ETF ' : '종목코드 ')) + code + ' · ' + krTv(code);
     if (link) link.href = krNaver(code);
     if (tvLink) tvLink.href = 'https://www.tradingview.com/chart/?symbol=' + krTv(code);
     var stockLink = $('krStockLink');
@@ -2904,6 +3057,173 @@
       it.tv = ticker;
     }
     selectUs(plain);
+  }
+
+  /* ---------------- 검색 자동완성 드로다운 ---------------- */
+  var SUG = { kr: { list: [], idx: -1, open: false }, us: { list: [], idx: -1, open: false } };
+
+  function sugBox(kind) { return $(kind + 'Suggest'); }
+
+  function krRow(it) {
+    var tag = it.idx ? '지수' : (it.kind === 'e' ? 'ETF' : '');
+    var on = favIs('kr', it.c);
+    return '<div class="sitem" role="option" aria-selected="false">' +
+      '<button type="button" class="spick" data-pick="' + esc(it.c) + '" tabindex="-1">' +
+      '<span class="stxt"><span class="sn">' + esc(it.n || it.c) + (tag ? '<span class="stag">' + tag + '</span>' : '') + '</span>' +
+      (it.en ? '<span class="se">' + esc(it.en) + '</span>' : '') + '</span>' +
+      '<span class="sc">' + esc(it.c) + '</span></button>' +
+      '<button type="button" class="sstar' + (on ? ' on' : '') + '" data-fav-add="' + esc(it.c) + '" tabindex="-1" aria-pressed="' + (on ? 'true' : 'false') + '" aria-label="' + esc((it.n || it.c) + ' 즐겨찾기 ' + (on ? '해제' : '추가')) + '">' + (on ? '★' : '☆') + '</button></div>';
+  }
+  function usRow(it) {
+    var main = it.n || it.en || it.t;
+    var sub = (it.n && it.en && it.en !== it.n) ? it.en : '';
+    var on = favIs('us', it.t);
+    return '<div class="sitem" role="option" aria-selected="false">' +
+      '<button type="button" class="spick" data-pick="' + esc(it.t) + '" tabindex="-1">' +
+      '<span class="stxt"><span class="sn">' + esc(main) + '</span>' +
+      (sub ? '<span class="se">' + esc(sub) + '</span>' : '') + '</span>' +
+      '<span class="sc">' + esc(it.t) + '</span></button>' +
+      '<button type="button" class="sstar' + (on ? ' on' : '') + '" data-fav-add="' + esc(it.t) + '" tabindex="-1" aria-pressed="' + (on ? 'true' : 'false') + '" aria-label="' + esc(main + ' 즐겨찾기 ' + (on ? '해제' : '추가')) + '">' + (on ? '★' : '☆') + '</button></div>';
+  }
+
+  function renderSug(kind) {
+    var box = sugBox(kind);
+    var input = $(kind + 'Input');
+    if (!box || !input) return;
+    var q = input.value || '';
+    var s = SUG[kind];
+    var hits = kind === 'kr' ? searchKr(q, 10) : searchUs(q, 10);
+    s.list = hits; s.idx = -1;
+    if (!hits.length) {
+      if (!q.trim()) { closeSug(kind); return; }
+      var msg = dbReady(kind)
+        ? '검색 결과가 없어요 · ' + (kind === 'kr' ? '6자리 코드를 그대로 넣으면 바로 열립니다' : '영문 티커를 그대로 넣으면 바로 열립니다')
+        : '종목 목록을 불러오는 중…';
+      box.innerHTML = '<div class="sempty">' + esc(msg) + '</div>';
+    } else {
+      var head = (dbReady(kind) && hits.length > 1)
+        ? (kind === 'kr' ? '국내 ' + (DB.krlist.length - 2) + '종목' : '미국 ' + DB.uslist.length + '종목') + '에서 찾았어요'
+        : '';
+      box.innerHTML = (head ? '<div class="snote">' + esc(head) + '</div>' : '') +
+        hits.map(function (h) { return kind === 'kr' ? krRow(h.it) : usRow(h.it); }).join('');
+    }
+    box.hidden = false;
+    s.open = true;
+    input.setAttribute('aria-expanded', 'true');
+  }
+
+  function closeSug(kind) {
+    var box = sugBox(kind);
+    var input = $(kind + 'Input');
+    SUG[kind].open = false;
+    SUG[kind].idx = -1;
+    if (box) { box.hidden = true; box.innerHTML = ''; }
+    if (input) input.setAttribute('aria-expanded', 'false');
+  }
+
+  function highlightSug(kind, next) {
+    var s = SUG[kind];
+    var box = sugBox(kind);
+    if (!box || !s.list.length) return;
+    if (!s.open) renderSug(kind);
+    var n = s.list.length;
+    s.idx = ((next % n) + n) % n;
+    var items = box.querySelectorAll('.sitem');
+    Array.prototype.forEach.call(items, function (el, i) {
+      var on = i === s.idx;
+      el.classList.toggle('on', on);
+      el.setAttribute('aria-selected', on ? 'true' : 'false');
+    });
+    if (items[s.idx] && items[s.idx].scrollIntoView) items[s.idx].scrollIntoView({ block: 'nearest' });
+  }
+
+  function pickSug(kind, id) {
+    closeSug(kind);
+    var input = $(kind + 'Input');
+    if (input) input.value = '';
+    var it = kind === 'kr' ? krItem(id) : usItem(id);
+    var nm = (it && (kind === 'kr' ? it.n : (it.n || it.t))) || id;
+    if (kind === 'kr') { addKr(id); } else { addUs(id); }
+    window.__toast(nm + ' 차트로 전환했어요');
+  }
+
+  /* 입력값을 해석해 차트를 바꾼다: 정확 일치 → 상위 검색결과 → 코드/티커 직접 열기 */
+  function resolveManual(kind, v) {
+    if (kind === 'kr') {
+      var c = v.replace(/\s+/g, '');
+      if (/^[0-9A-Z]{6}$/i.test(c)) { pickSug('kr', c.toUpperCase()); return; }
+      window.__toast('‘' + v + '’ 검색 결과가 없어요 · 종목명이나 6자리 코드를 확인해 주세요');
+      return;
+    }
+    var up = v.toUpperCase().replace(/\s+/g, '');
+    if (/^[A-Z.]{1,6}(:[A-Z.]{1,6})?$/.test(up)) { pickSug('us', up); return; }
+    window.__toast('‘' + v + '’ 검색 결과가 없어요 · 종목명이나 티커를 확인해 주세요');
+  }
+
+  function applySearch(kind) {
+    var input = $(kind + 'Input');
+    if (!input) return;
+    var v = (input.value || '').trim();
+    if (!v) {
+      window.__toast(kind === 'kr' ? '종목명이나 코드를 넣어 주세요 (예: 기아, Samsung, 005930)' : '종목명이나 티커를 넣어 주세요 (예: 엔비디아, Apple, NVDA)');
+      return;
+    }
+    if (!dbReady(kind) && !DB.load[kind]) {
+      loadDb(kind).then(function (ok) { if (ok) applySearch(kind); else resolveManual(kind, v); });
+      return;
+    }
+    var hits = dbReady(kind) ? (kind === 'kr' ? searchKr(v, 1) : searchUs(v, 1)) : [];
+    if (hits.length) {
+      pickSug(kind, hits[0].id);
+      return;
+    }
+    resolveManual(kind, v);
+  }
+
+  function bindSuggest(kind) {
+    var input = $(kind + 'Input'), box = sugBox(kind);
+    if (!input || !box) return;
+    input.addEventListener('input', function () {
+      if (!dbReady(kind) && (input.value || '').trim()) loadDb(kind).then(function () { if (document.activeElement === input) renderSug(kind); });
+      renderSug(kind);
+    });
+    input.addEventListener('focus', function () { if ((input.value || '').trim()) renderSug(kind); if (!dbReady(kind)) loadDb(kind); });
+    input.addEventListener('keydown', function (e) {
+      var s = SUG[kind];
+      if (e.key === 'ArrowDown') { e.preventDefault(); if (!s.open) renderSug(kind); highlightSug(kind, s.idx + 1); }
+      else if (e.key === 'ArrowUp') { e.preventDefault(); highlightSug(kind, s.idx - 1); }
+      else if (e.key === 'Escape') { closeSug(kind); }
+      else if (e.key === 'Enter') {
+        if (s.open && s.idx >= 0 && s.list[s.idx]) { e.preventDefault(); pickSug(kind, s.list[s.idx].id); }
+      }
+    });
+    input.addEventListener('blur', function () { setTimeout(function () { closeSug(kind); }, 140); });
+    box.addEventListener('mousedown', function (e) { e.preventDefault(); });
+    box.addEventListener('click', function (e) {
+      var star = e.target.closest('[data-fav-add]');
+      if (star) {
+        e.preventDefault();
+        var id = star.getAttribute('data-fav-add');
+        var it = kind === 'kr' ? krItem(id) : usItem(id);
+        var nm = (it && (it.n || it.t)) || id;
+        if (favIs(kind, id)) {
+          favDel(kind, id);
+          star.textContent = '☆'; star.classList.remove('on'); star.setAttribute('aria-pressed', 'false');
+          star.setAttribute('aria-label', nm + ' 즐겨찾기 추가');
+          window.__toast(nm + ' 즐겨찾기에서 뺐어요');
+        } else {
+          favAdd(kind, id, nm);
+          star.textContent = '★'; star.classList.add('on'); star.setAttribute('aria-pressed', 'true');
+          star.setAttribute('aria-label', nm + ' 즐겨찾기 해제');
+          window.__toast(nm + ' 즐겨찾기에 추가했어요');
+        }
+        renderQuick(kind);
+        paintFavBtn(kind);
+        return;
+      }
+      var b = e.target.closest('[data-pick]');
+      if (b) pickSug(kind, b.getAttribute('data-pick'));
+    });
   }
 
   /* ---------------- Firebase 실시간 동기화 ---------------- */
@@ -2981,21 +3301,15 @@
     var krForm = $('krForm');
     if (krForm) krForm.addEventListener('submit', function (e) {
       e.preventDefault();
-      var v = ($('krInput').value || '').trim();
-      if (!/^\d{6}$/.test(v)) { window.__toast('종목코드 6자리를 넣어 주세요 (예: 005930)'); return; }
-      addKr(v);
-      $('krInput').value = '';
-      window.__toast(v + ' 차트로 전환했어요');
+      applySearch('kr');
     });
     var usForm = $('usForm');
     if (usForm) usForm.addEventListener('submit', function (e) {
       e.preventDefault();
-      var v = ($('usInput').value || '').trim().toUpperCase().replace(/\s+/g, '');
-      if (!/^[A-Z.]{1,6}(:[A-Z.]{1,6})?$/.test(v)) { window.__toast('티커를 넣어 주세요 (예: NVDA)'); return; }
-      addUs(v);
-      $('usInput').value = '';
-      window.__toast(v.split(':').pop() + ' 차트로 전환했어요');
+      applySearch('us');
     });
+    bindSuggest('kr');
+    bindSuggest('us');
     bindRemote();
     var nowTab = window.__tab ? window.__tab() : '';
     if (nowTab === 'kr' || nowTab === 'us') window.StockCharts.activate(nowTab);
@@ -3003,8 +3317,8 @@
 
   window.StockCharts = {
     activate: function (id) {
-      if (id === 'kr' && !st.kr.built) selectKr(st.kr.sel);
-      if (id === 'us' && !st.us.built) selectUs(st.us.sel);
+      if (id === 'kr') { loadDb('kr'); if (!st.kr.built) selectKr(st.kr.sel); }
+      if (id === 'us') { loadDb('us'); if (!st.us.built) selectUs(st.us.sel); }
     },
     reload: function (id) {
       if (id === 'kr') selectKr(st.kr.sel);
@@ -3013,6 +3327,11 @@
     bindRemote: bindRemote,
     toggleFav: favToggle,
     select: function (kind, id) { if (kind === 'kr') selectKr(id); else selectUs(id); },
+    search: function (kind, q, n) {
+      var hits = kind === 'kr' ? searchKr(q, n || 10) : searchUs(q, n || 10);
+      return hits.map(function (h) { return { id: h.id, name: h.it.n, en: h.it.en }; });
+    },
+    dbSize: function (kind) { return kind === 'kr' ? DB.krlist.length : DB.uslist.length; },
     favorites: function () { return { kr: fav.kr.slice(), us: fav.us.slice(), stamp: fav.stamp }; }
   };
 
