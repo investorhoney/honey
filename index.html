@@ -402,7 +402,7 @@
   /* ---------- charts ---------- */
   .charthead{display:flex;align-items:center;gap:9px;flex-wrap:wrap;margin:4px 0 8px}
   .charthead b{font-size:15px;letter-spacing:-.02em}
-  .charthead .btn{margin-left:auto}
+  .charthead .chartlinks{margin-left:auto;display:flex;gap:6px;flex-wrap:wrap}
   .chartbox{
     position:relative;height:480px;border:1px solid var(--line);border-radius:16px;
     overflow:hidden;background:#0b1224;box-shadow:var(--shadow);
@@ -638,7 +638,10 @@
       <div class="charthead">
         <b id="krChartTitle">삼성전자</b>
         <span class="small muted" id="krChartMeta">KRX:005930</span>
-        <a class="btn" id="krChartLink" href="https://finance.naver.com/item/main.naver?code=005930" target="_blank" rel="noopener noreferrer">네이버증권 ↗</a>
+        <span class="chartlinks">
+          <a class="btn" id="krStockLink" href="https://m.stock.naver.com/domestic/stock/005930/total" target="_blank" rel="noopener noreferrer">네이버페이 증권 ↗</a>
+          <a class="btn" id="krChartLink" href="https://finance.naver.com/item/main.naver?code=005930" target="_blank" rel="noopener noreferrer">네이버금융 ↗</a>
+        </span>
       </div>
 
       <div class="segline" id="krViewBtns">
@@ -683,7 +686,10 @@
       <div class="charthead">
         <b id="usChartTitle">S&amp;P500 (SPY)</b>
         <span class="small muted" id="usChartMeta">AMEX:SPY</span>
-        <a class="btn" id="usChartLink" href="https://finance.yahoo.com/quote/SPY" target="_blank" rel="noopener noreferrer">야후 파이낸스 ↗</a>
+        <span class="chartlinks">
+          <a class="btn" id="usChartLink" href="https://finance.yahoo.com/quote/SPY" target="_blank" rel="noopener noreferrer">야후 파이낸스 ↗</a>
+          <a class="btn" id="usTvLink" href="https://www.tradingview.com/symbols/AMEX-SPY/" target="_blank" rel="noopener noreferrer">트레이딩뷰 ↗</a>
+        </span>
       </div>
       <div class="chartbox" id="usChart">
         <div class="tv-wrap"></div>
@@ -2300,6 +2306,12 @@
     if (meta) meta.textContent = (it && it.idx ? 'KRX 지수' : '종목코드 ' + code) + ' · ' + krTv(code);
     if (link) link.href = krNaver(code);
     if (fb) fb.href = krNaver(code);
+    var stockLink = $('krStockLink');
+    if (stockLink) {
+      stockLink.href = (it && it.idx)
+        ? 'https://m.stock.naver.com/domestic/index/' + encodeURIComponent(code) + '/total'
+        : 'https://m.stock.naver.com/domestic/stock/' + encodeURIComponent(code) + '/total';
+    }
     renderKrQuick();
     st.kr.built = true;
     paintKrView();
@@ -2321,6 +2333,8 @@
     if (mt) mt.textContent = plain + ' · ' + tv;
     if (link) link.href = 'https://finance.yahoo.com/quote/' + encodeURIComponent(plain);
     if (fb) fb.href = 'https://finance.yahoo.com/quote/' + encodeURIComponent(plain);
+    var tvLink = $('usTvLink');
+    if (tvLink) tvLink.href = 'https://www.tradingview.com/symbols/' + tv.replace(':', '-') + '/';
     renderUsQuick();
     st.us.built = true;
     window.__tvChart('usChart', tv, 'D');
