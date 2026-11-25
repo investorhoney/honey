@@ -6,27 +6,36 @@
 <meta name="robots" content="noindex">
 <title>390 미리보기</title>
 <style>
-  html,body{margin:0;padding:0;background:#05070f;display:flex;justify-content:center}
-  iframe{width:390px;height:844px;border:0;display:block;background:#0b0f19}
+  html,body{margin:0;padding:0;background:#05070f}
+  #row{display:flex;gap:8px;justify-content:center;align-items:flex-start}
+  iframe{width:390px;height:844px;border:0;display:block;background:#0b0f19;flex:0 0 auto}
 </style>
 </head>
 <body>
-<iframe id="f" src="./index.html" title="390x844 미리보기"></iframe>
+<div id="row"></div>
 <script>
-  document.getElementById('f').addEventListener('load', function () {
-    try {
-      var d = this.contentDocument;
-      var btns = d.querySelectorAll('#tabbar button, #tabbar a');
-      for (var i = 0; i < btns.length; i++) {
-        if ((btns[i].textContent || '').indexOf('램') >= 0) { btns[i].click(); break; }
-      }
-      var m = /[?&]y=(\d+)/.exec(location.search || '');
-      if (m) {
-        var top = parseInt(m[1], 10), self = this;
-        setTimeout(function () { self.contentWindow.scrollTo(0, top); }, 700);
-      }
-    } catch (e) { /* 미리보기용 */ }
-  });
+  (function () {
+    var q = /[?&]y=([\d,]+)/.exec(location.search || '');
+    var list = q ? q[1].split(',').map(function (v) { return parseInt(v, 10) || 0; }) : [0];
+    var row = document.getElementById('row');
+    list.forEach(function (y, i) {
+      var f = document.createElement('iframe');
+      f.id = 'p' + i;
+      f.src = './index.html';
+      f.title = '390x844 미리보기 ' + y;
+      f.addEventListener('load', function () {
+        try {
+          var d = f.contentDocument;
+          var btns = d.querySelectorAll('#tabbar button, #tabbar a');
+          for (var k = 0; k < btns.length; k++) {
+            if ((btns[k].textContent || '').indexOf('램') >= 0) { btns[k].click(); break; }
+          }
+          setTimeout(function () { f.contentWindow.scrollTo(0, y); }, 900);
+        } catch (e) { /* 미리보기용 */ }
+      });
+      row.appendChild(f);
+    });
+  })();
 </script>
 </body>
 </html>
