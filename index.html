@@ -5675,9 +5675,9 @@
         '<span class="d">·</span><span>출처 DRAMeXchange</span>';
     }
     if (foot) {
-      foot.innerHTML = '참고: DRAMeXchange 현물가는 <b>1일 여러 차례 세션</b>으로 갱신됩니다 · 이 탭은 열 때마다 최신 값을 다시 불러옵니다' +
+      foot.innerHTML = '참고: DRAMeXchange 현물가는 <b>1일 여러 차례 세션</b>으로 갱신됩니다 · 이 탭은 열 때마다 저장된 최신 값을 다시 읽습니다' +
         (data.fetchedLabel ? ' · 마지막 수집 ' + esc(data.fetchedLabel) : '') +
-        ' · 표마다 기준 시각이 다를 수 있고, 흐린 주황색 시각은 그 표의 최근 갱신이 아닙니다.';
+        ' · 표마다 기준 시각이 다르며, 주황색 시각은 그 표의 최근 갱신이 아닙니다.';
     }
   }
 
