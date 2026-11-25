@@ -5,8 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex, nofollow">
 <meta name="theme-color" content="#080c18">
-<meta name="description" content="폴리마켓 세상물정 스캐너 + 코인마켓·국내주식·미국주식 실시간 차트 + 주식 사진첩·매매일지·복기 메모를 한 화면에서">
-<title>투자 스캐너 · 폴리마켓 · 코인 · 주식</title>
+<meta name="description" content="매일 아침 5시 신문 요약 + 폴리마켓 세상물정 스캐너 + 코인마켓·국내주식·미국주식 실시간 차트 + 주식 사진첩·매매일지·복기 메모를 한 화면에서">
+<title>투자 스캐너 · 신문요약 · 폴리마켓 · 코인 · 주식</title>
 <style>
   :root{
     --bg:#080c18;
@@ -65,7 +65,8 @@
     border-bottom:1px solid var(--line);
   }
   .topbar-in{max-width:1180px;margin:0 auto;padding:12px 18px;display:flex;align-items:center;gap:14px}
-  .brand{display:flex;align-items:center;gap:11px;min-width:0}
+  .brand{display:flex;align-items:center;gap:11px;min-width:0;overflow:hidden}
+  .brand > div{min-width:0}
   .logo{
     width:38px;height:38px;flex:0 0 38px;border-radius:12px;
     display:grid;place-items:center;font-size:19px;
@@ -120,7 +121,7 @@
   .tab:hover{color:var(--cream-ink);background:#FBF3E4}
   .tab.on{color:var(--cream-ink);background:var(--cream-soft);box-shadow:inset 0 0 0 1px #F7E3A0}
   @media (min-width:860px){
-    .tabbar-in{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));max-width:920px;margin:0 auto}
+    .tabbar-in{display:grid;grid-template-columns:repeat(8,minmax(0,1fr));max-width:1000px;margin:0 auto}
     .tab{width:100%;padding:9px 10px;font-size:14px;letter-spacing:-.02em}
     .tab svg{width:22px;height:22px;margin-bottom:1px}
   }
@@ -131,6 +132,57 @@
   @media (max-width:420px){
     .tab{padding:6px 10px;min-width:52px;font-size:10px;gap:2px}
     .tab svg{width:18px;height:18px}
+  }
+
+  /* ---------- 신문요약 (매일 05:00 · 자전과 공전) ---------- */
+  .newshead{display:flex;align-items:flex-start;gap:12px;margin:18px 0 12px;flex-wrap:wrap}
+  #panel-news{max-width:940px;margin:0 auto}
+  .newshead .nh-main{min-width:0;flex:1 1 240px}
+  .newshead .nh-kicker{
+    display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:750;letter-spacing:.01em;
+    color:#ffd9a0;background:rgba(255,196,84,.12);border:1px solid rgba(255,196,84,.26);
+    padding:4px 9px;border-radius:999px;white-space:nowrap;
+  }
+  .newshead h2{margin:9px 0 5px;font-size:20px;font-weight:800;letter-spacing:-.032em;line-height:1.3;word-break:keep-all}
+  .newshead .nh-sub{display:flex;align-items:center;gap:2px 8px;flex-wrap:wrap;font-size:11.5px;color:var(--muted)}
+  .newshead .nh-sub .d{color:var(--muted-2)}
+  .newshead .newslink{flex:0 0 auto;font-size:12px;padding:9px 12px;border-radius:11px;font-weight:700;color:#dfe6ff;background:linear-gradient(140deg,rgba(110,140,255,.22),rgba(160,110,255,.18));border-color:rgba(140,150,255,.3)}
+  .newshead .newslink:hover{background:linear-gradient(140deg,rgba(110,140,255,.34),rgba(160,110,255,.3));color:#fff}
+  .newsdates{display:flex;gap:7px;overflow-x:auto;scrollbar-width:none;margin:0 -18px 12px;padding:2px 18px 4px}
+  .newsdates::-webkit-scrollbar{display:none}
+  .newsdates .chip[aria-pressed="true"]{background:linear-gradient(140deg,rgba(110,140,255,.95),rgba(160,110,255,.95))}
+  .newslist{display:flex;flex-direction:column;gap:10px}
+  .newsitem{
+    display:flex;gap:11px;align-items:flex-start;
+    background:linear-gradient(168deg,rgba(255,255,255,.055),rgba(255,255,255,.018));
+    border:1px solid var(--line);border-radius:16px;padding:13px 15px;box-shadow:var(--shadow);
+    animation:rise .3s ease both;
+  }
+  .newsitem:hover{border-color:rgba(160,180,255,.3)}
+  .newsitem .nnum{
+    flex:0 0 28px;width:28px;height:28px;border-radius:9px;display:grid;place-items:center;
+    font-size:12.5px;font-weight:800;font-variant-numeric:tabular-nums;color:#fff;
+    background:linear-gradient(140deg,rgba(110,140,255,.9),rgba(160,110,255,.9));
+    box-shadow:0 6px 16px -10px rgba(120,130,255,.95);
+  }
+  .newsitem .nbody{min-width:0;flex:1 1 auto}
+  .newsitem h3{margin:2px 0 0;font-size:14.5px;font-weight:780;line-height:1.4;letter-spacing:-.022em;word-break:keep-all;overflow-wrap:anywhere}
+  .newsitem p{margin:6px 0 0;font-size:12.8px;line-height:1.62;color:#c6d2ee;word-break:keep-all;overflow-wrap:anywhere}
+  .newsitem .npress{
+    display:inline-block;margin-left:5px;vertical-align:1px;white-space:nowrap;
+    font-size:10.5px;font-weight:700;color:#a7b6da;background:rgba(255,255,255,.07);
+    border:1px solid var(--line);border-radius:6px;padding:1px 6px;
+  }
+  .newsfoot{margin-top:14px;padding-top:11px;border-top:1px dashed rgba(255,255,255,.09);font-size:11px;color:var(--muted-2);line-height:1.6}
+  .newsfoot b{color:#a9b8da;font-weight:700}
+  @media (max-width:760px){
+    .newshead{margin:14px 0 10px;gap:8px}
+    .newshead h2{font-size:17px}
+    .newsdates{margin:0 -14px 10px;padding-left:14px;padding-right:14px}
+    .newsitem{padding:11px 12px;border-radius:14px;gap:9px}
+    .newsitem h3{font-size:13.6px}
+    .newsitem p{font-size:12.3px;line-height:1.58}
+    .newshead .newslink{font-size:11px;padding:7px 10px}
   }
 
   /* ---------- panels ---------- */
@@ -625,7 +677,7 @@
       <div class="logo" aria-hidden="true">📊</div>
       <div>
         <h1>투자 스캐너</h1>
-        <p>폴리마켓 · 코인 · 국내/미국 주식 · 매매일지</p>
+        <p>매일 신문요약 · 폴리마켓 · 코인 · 주식 · 매매일지</p>
       </div>
     </div>
     <div class="topbar-right">
@@ -643,8 +695,28 @@
   </nav>
 
   <main>
+    <!-- ================= 신문요약 (매일 05:00) ================= -->
+    <section class="panel on" id="panel-news" role="tabpanel" aria-label="신문요약">
+      <div class="newshead">
+        <div class="nh-main">
+          <span class="nh-kicker">📰 매일 05:00 업데이트</span>
+          <h2 id="newsTitle">신문을 통해 알게 된 것들</h2>
+          <div class="nh-sub" id="newsSub"><span>불러오는 중…</span></div>
+        </div>
+        <a class="btn newslink" id="newsSource" href="https://blog.naver.com/abcd9361" target="_blank" rel="noopener">원문 보기 ↗</a>
+      </div>
+
+      <div class="newsdates" id="newsDates" role="group" aria-label="날짜 선택"></div>
+
+      <div class="newslist" id="newsList" aria-live="polite"></div>
+
+      <div class="newsfoot">
+        출처: 네이버 블로그 <b>‘자전과 공전’</b> · 매일 05:00 새 글 업로드 · 새 날짜는 새로고침 없이 자동으로 뜹니다.
+      </div>
+    </section>
+
     <!-- ================= 폴리마켓 ================= -->
-    <section class="panel on" id="panel-poly" role="tabpanel" aria-label="폴리마켓">
+    <section class="panel" id="panel-poly" role="tabpanel" aria-label="폴리마켓">
       <section class="summary" aria-label="요약">
         <div class="stat"><span class="k">이슈</span><b id="statEvents">–</b></div>
         <div class="stat"><span class="k">24h 거래</span><b id="statVol">–</b></div>
@@ -913,7 +985,7 @@
   </main>
 
   <footer class="foot">
-    <span>Polymarket · Upbit · TradingView 공개 데이터 · 기록은 Firebase 실시간 동기화</span>
+    <span>신문요약 출처: 네이버 블로그 ‘자전과 공전’ · Polymarket · Upbit · TradingView 공개 데이터 · 기록은 Firebase 실시간 동기화</span>
     <span>투자 조언이 아니며, 모든 판단과 책임은 본인에게 있습니다.</span>
   </footer>
 </div>
@@ -1026,9 +1098,11 @@
     flag: '<path d="M5.8 20V4.4"/><path d="M5.8 5.2h11.6l-1.9 3 1.9 3H5.8"/>',
     camera: '<rect x="3" y="7.2" width="18" height="13.4" rx="3.4"/><circle cx="12" cy="13.9" r="3.7"/><path d="M8.4 7.2 9.7 4.4h4.6l1.3 2.8"/><circle cx="17.6" cy="10.7" r=".7" fill="currentColor" stroke="none"/>',
     book: '<path d="M4 5.6A1.6 1.6 0 0 1 5.6 4H10a2 2 0 0 1 2 2v13.4a2 2 0 0 0-2-2H4z"/><path d="M20 5.6A1.6 1.6 0 0 0 18.4 4H14a2 2 0 0 0-2 2v13.4a2 2 0 0 1 2-2h6z"/>',
-    pen: '<path d="M4.6 19.4h3.9L19 8.9a2.1 2.1 0 0 0-3-3L5.5 16.4z"/><path d="M14.6 6.4 17.6 9.4"/>'
+    pen: '<path d="M4.6 19.4h3.9L19 8.9a2.1 2.1 0 0 0-3-3L5.5 16.4z"/><path d="M14.6 6.4 17.6 9.4"/>',
+    news: '<rect x="3.6" y="5" width="16.8" height="14" rx="2.6"/><path d="M7 9.2h6"/><path d="M7 12.6h10"/><path d="M7 16h7"/>'
   };
   var TABS = [
+    { id: 'news', label: '신문요약', icon: 'news' },
     { id: 'poly', label: '폴리마켓', icon: 'globe' },
     { id: 'coin', label: '코인마켓', icon: 'coin' },
     { id: 'kr', label: '국내주식', icon: 'chart' },
@@ -1037,8 +1111,8 @@
     { id: 'trades', label: '매매일지', icon: 'book' },
     { id: 'notes', label: '복기메모', icon: 'pen' }
   ];
-  var TAB_KEY = 'honey.v2.tab';
-  var ui = { tab: 'poly' };
+  var TAB_KEY = 'honey.v5.tab';
+  var ui = { tab: 'news' };
 
   function tabIcon(name) {
     return '<svg viewBox="0 0 24 24" aria-hidden="true">' + (ICONS[name] || '') + '</svg>';
@@ -1060,7 +1134,7 @@
     }).join('');
   }
   function setTab(id, opts) {
-    if (!id || !TABS.some(function (t) { return t.id === id; })) id = 'poly';
+    if (!id || !TABS.some(function (t) { return t.id === id; })) id = 'news';
     ui.tab = id;
     TABS.forEach(function (t) {
       var panel = $('panel-' + t.id);
@@ -1078,6 +1152,7 @@
     }
     window.scrollTo({ top: 0, behavior: 'auto' });
     if (window.PolyScanner && id === 'poly') window.PolyScanner.ensure();
+    if (window.DailyNews && id === 'news') window.DailyNews.render();
     if (window.CoinMarket && id === 'coin') window.CoinMarket.activate();
     if (window.StockCharts) window.StockCharts.activate(id);
     if (window.PhotoAlbum && id === 'photos') window.PhotoAlbum.render();
@@ -1096,7 +1171,7 @@
       });
     }
     var initial = null;
-    try { initial = (location.hash || '').replace('#', '') || localStorage.getItem(TAB_KEY) || 'poly'; } catch (e) { initial = 'poly'; }
+    try { initial = (location.hash || '').replace('#', '') || localStorage.getItem(TAB_KEY) || 'news'; } catch (e) { initial = 'news'; }
     setTab(initial, { hash: false });
     window.addEventListener('resize', function () { updateTabOverflow(); });
     window.addEventListener('hashchange', function () {
@@ -1109,7 +1184,8 @@
         gr.setAttribute('aria-busy', 'true');
         setTimeout(function () { gr.removeAttribute('aria-busy'); }, 900);
         var t = ui.tab;
-        if (t === 'poly' && window.PolyScanner) window.PolyScanner.refresh();
+        if (t === 'news' && window.DailyNews) window.DailyNews.refresh();
+        else if (t === 'poly' && window.PolyScanner) window.PolyScanner.refresh();
         else if (t === 'coin' && window.CoinMarket) window.CoinMarket.refresh();
         else if ((t === 'kr' || t === 'us') && window.StockCharts) window.StockCharts.reload(t);
         else if (t === 'photos' && window.PhotoAlbum) window.PhotoAlbum.render();
@@ -1164,6 +1240,7 @@
         fb.connected = !!snap.val();
         setSync(fb.connected ? 'on' : 'off', fb.connected ? '실시간 동기화' : '로컬 저장');
       });
+      if (window.DailyNews) window.DailyNews.bindRemote();
       if (window.PhotoAlbum) window.PhotoAlbum.bindRemote();
       if (window.TradeJournal) window.TradeJournal.bindRemote();
       if (window.TradeNotes) window.TradeNotes.bindRemote();
@@ -4032,6 +4109,151 @@
   }
 
   window.TradeNotes = { render: render, bindRemote: bindRemote, openForm: openForm };
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
+  else init();
+})();
+</script>
+<script>
+/* ==================== 신문요약 · 매일 05:00 (네이버 블로그 ‘자전과 공전’) ==================== */
+(function () {
+  var ns = { map: null, date: null, bound: false, loading: true, fetched: false };
+  var CACHE = 'honey.v5.news';
+  var REST = 'https://family-log-56c73-default-rtdb.firebaseio.com/rooms/kgh-invest-scanner-2026/state/dailyNews.json';
+  var WD = ['일', '월', '화', '수', '목', '금', '토'];
+
+  function $(id) { return document.getElementById(id); }
+  function pad2(n) { return (n < 10 ? '0' : '') + n; }
+  function esc(s) {
+    return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+    });
+  }
+  function todayKey() {
+    try { if (window.__today) return window.__today(); } catch (e) { /* ignore */ }
+    var d = new Date();
+    return d.getFullYear() + '-' + pad2(d.getMonth() + 1) + '-' + pad2(d.getDate());
+  }
+  function dayDiff(from, to) {
+    var a = from.split('-'), b = to.split('-');
+    return Math.round((Date.UTC(+b[0], +b[1] - 1, +b[2]) - Date.UTC(+a[0], +a[1] - 1, +a[2])) / 86400000);
+  }
+  function weekday(k) {
+    var p = k.split('-');
+    return WD[new Date(Date.UTC(+p[0], +p[1] - 1, +p[2])).getUTCDay()] || '';
+  }
+  function keys() {
+    var m = ns.map || {};
+    return Object.keys(m).filter(function (k) {
+      return /^\d{4}-\d{2}-\d{2}$/.test(k) && m[k] && m[k].items && m[k].items.length;
+    }).sort().reverse();
+  }
+  function chipLabel(k) {
+    var d = dayDiff(k, todayKey());
+    var md = (+k.slice(5, 7)) + '/' + (+k.slice(8, 10));
+    if (d === 0) return md + ' (오늘)';
+    if (d === 1) return md + ' (어제)';
+    return md + ' (' + weekday(k) + ')';
+  }
+  function render() {
+    var list = $('newsList'), chips = $('newsDates');
+    if (!list) return;
+    var ks = keys();
+    var src = $('newsSource');
+    if (!ks.length) {
+      ns.date = null;
+      if (chips) chips.innerHTML = '';
+      if ($('newsTitle')) $('newsTitle').textContent = '신문을 통해 알게 된 것들';
+      if ($('newsSub')) $('newsSub').innerHTML = '<span>' + (ns.loading ? '불러오는 중…' : '아직 올라온 요약이 없어요') + '</span>';
+      if (src) src.href = 'https://blog.naver.com/abcd9361';
+      list.innerHTML = '<div class="state"><div class="ico">📰</div><h3>' +
+        (ns.loading ? '오늘의 신문 요약을 불러오는 중이에요' : '아직 올라온 신문 요약이 없어요') + '</h3><p>' +
+        (ns.loading ? '잠시만 기다려 주세요.' : '매일 05:00에 새 요약이 올라옵니다. 잠시 뒤 다시 확인해 주세요.') + '</p>' +
+        (ns.loading ? '' : '<button class="retry" type="button" id="newsRetry">다시 불러오기</button>') + '</div>';
+      var rt = $('newsRetry');
+      if (rt) rt.addEventListener('click', function () { ns.loading = true; render(); restFetch(false); });
+      return;
+    }
+    var t = todayKey();
+    if (!ns.date || ks.indexOf(ns.date) < 0) ns.date = ks.indexOf(t) >= 0 ? t : ks[0];
+    if (chips) {
+      chips.innerHTML = ks.slice(0, 16).map(function (k) {
+        return '<button class="chip" type="button" data-newsdate="' + k + '" aria-pressed="' + (k === ns.date) + '"' +
+          ' title="' + k + ' (' + weekday(k) + ')">' + esc(chipLabel(k)) + '</button>';
+      }).join('');
+    }
+    var rec = ns.map[ns.date];
+    if ($('newsTitle')) $('newsTitle').textContent = rec.title || (ns.date + ' 신문 요약');
+    if ($('newsSub')) {
+      var p = ns.date.split('-');
+      $('newsSub').innerHTML = '<span>' + p[0] + '년 ' + (+p[1]) + '월 ' + (+p[2]) + '일 (' + weekday(ns.date) + ')</span>' +
+        '<span class="d">·</span><span>항목 ' + rec.items.length + '개</span>' +
+        '<span class="d">·</span><span>출처 ‘자전과 공전’</span>';
+    }
+    if (src) src.href = rec.sourceUrl || 'https://blog.naver.com/abcd9361';
+    list.innerHTML = rec.items.slice().sort(function (a, b) { return (a.num || 0) - (b.num || 0); }).map(function (it, i) {
+      var press = it.press ? '<span class="npress">' + esc(it.press) + '</span>' : '';
+      var body = it.body ? '<p>' + esc(it.body).replace(/\n/g, '<br>') + press + '</p>' : (press ? '<p>' + press + '</p>' : '');
+      return '<article class="newsitem" style="animation-delay:' + Math.min(i * 22, 260) + 'ms">' +
+        '<span class="nnum">' + (it.num || i + 1) + '</span>' +
+        '<div class="nbody"><h3>' + esc(it.head || it.body || '') + '</h3>' + body + '</div></article>';
+    }).join('');
+  }
+  function ingest(val, remote) {
+    ns.loading = false;
+    ns.fetched = true;
+    if (val && typeof val === 'object') ns.map = val;
+    if (remote) { try { localStorage.setItem(CACHE, JSON.stringify(ns.map || {})); } catch (e) { /* ignore */ } }
+    render();
+  }
+  function loadCache() {
+    try {
+      var raw = localStorage.getItem(CACHE);
+      if (!raw) return;
+      var v = JSON.parse(raw);
+      if (v && typeof v === 'object') { ns.map = v; ns.loading = false; }
+    } catch (e) { /* ignore */ }
+  }
+  function restFetch(silent) {
+    return fetch(REST + (REST.indexOf('?') < 0 ? '?t=' : '&t=') + Date.now(), { cache: 'no-store' })
+      .then(function (r) { if (!r.ok) throw new Error('http ' + r.status); return r.json(); })
+      .then(function (v) { ingest(v, true); })
+      .catch(function () {
+        ns.loading = false;
+        render();
+        if (!silent && window.__toast) window.__toast('신문 요약을 불러오지 못했어요. 잠시 뒤 다시 시도해 주세요');
+      });
+  }
+  function bindRemote() {
+    var f = window.__fb;
+    if (!f || !f.ready || !f.root || ns.bound) return;
+    ns.bound = true;
+    try {
+      f.root.child('dailyNews').on('value', function (snap) { ingest(snap.val(), true); }, function () { ns.loading = false; render(); });
+    } catch (e) { /* ignore */ }
+  }
+  function refresh() {
+    ns.loading = true;
+    render();
+    if (ns.bound) { ns.loading = false; render(); window.__toast && window.__toast('실시간으로 받은 최신 신문 요약이에요'); return; }
+    restFetch(false);
+  }
+
+  function init() {
+    var chips = $('newsDates');
+    if (chips) chips.addEventListener('click', function (e) {
+      var b = e.target.closest('[data-newsdate]');
+      if (!b) return;
+      ns.date = b.getAttribute('data-newsdate');
+      render();
+      try { window.scrollTo({ top: 0, behavior: 'smooth' }); } catch (err) { /* ignore */ }
+    });
+    loadCache();
+    render();
+    bindRemote();
+    setTimeout(function () { if (!ns.fetched) restFetch(true); }, 5000);
+  }
+
+  window.DailyNews = { render: render, bindRemote: bindRemote, refresh: refresh };
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
   else init();
 })();
