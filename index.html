@@ -3379,6 +3379,7 @@
     loading: { coin: false, kr: false, us: false },
     last: { coin: 0, kr: 0, us: 0 },
     stamp: { list: 0, fav: 0 },
+    err: { coin: '', kr: '', us: '' },
     bound: false,
     coinDb: null,
     alertCtx: null,
@@ -3646,6 +3647,7 @@
   function paintMeta(market) {
     var el = $(market + 'Updated');
     if (!el) return;
+    if (wl.err[market]) { el.textContent = wl.err[market]; return; }
     if (!wl.last[market]) {
       if (wl.loading[market]) { el.textContent = '불러오는 중…'; return; }
       el.textContent = '시세 대기 중';
@@ -3708,8 +3710,10 @@
         .then(function (list) {
           (Array.isArray(list) ? list : []).forEach(function (t) { if (t && t.market) out[t.market] = coinRow(t); });
         });
-    })).then(function () { return out; }).catch(function () {
-      /* 잘못된 마켓이 하나라도 섞이면 전체 요청이 400이 되므로 한 종목씩 다시 시도한다 */
+    })).then(function () { return out; }).catch(function (err) {
+      /* 잘못된 마켓이 하나라도 섞이면 전체 요청이 400이 되므로 그때만 한 종목씩 다시 시도한다
+         (429 호출 제한이나 네트워크 오류에까지 쪼개서 요청하면 제한만 더 심해진다) */
+      if (!err || String(err.message) !== 'HTTP 400') throw err;
       return Promise.all(ids.map(function (id) {
         return getJson('https://api.upbit.com/v1/ticker?markets=' + encodeURIComponent(id))
           .then(function (list) {
@@ -3786,13 +3790,16 @@
       var q = wl.quotes[market];
       Object.keys(map).forEach(function (k) { q[k] = map[k]; });
       wl.last[market] = Date.now();
+      wl.err[market] = '';
       renderList(market);
       paintChartHeader(market);
       checkAlerts(market);
-    }).catch(function () {
+    }).catch(function (err) {
+      var limited = err && String(err.message).indexOf('429') >= 0;
+      wl.err[market] = limited ? '시세 요청이 잠시 제한됐어요 · 20초 뒤 다시 시도합니다' : '시세를 불러오지 못했어요 · 새로고침을 눌러 주세요';
       var el = $(market + 'Updated');
-      if (el) el.textContent = '시세를 불러오지 못했어요 · 새로고침을 눌러 주세요';
-      if (manual) toast('시세를 불러오지 못했어요 · 잠시 후 다시 시도해 주세요');
+      if (el) el.textContent = wl.err[market];
+      if (manual) toast(limited ? '시세 요청이 잠시 제한됐어요 · 잠시 후 다시 시도해 주세요' : '시세를 불러오지 못했어요 · 잠시 후 다시 시도해 주세요');
     }).then(function () {
       wl.loading[market] = false;
       paintMeta(market);
