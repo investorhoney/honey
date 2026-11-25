@@ -20,6 +20,11 @@
       for (var i = 0; i < btns.length; i++) {
         if ((btns[i].textContent || '').indexOf('램') >= 0) { btns[i].click(); break; }
       }
+      var m = /[?&]y=(\d+)/.exec(location.search || '');
+      if (m) {
+        var top = parseInt(m[1], 10), self = this;
+        setTimeout(function () { self.contentWindow.scrollTo(0, top); }, 700);
+      }
     } catch (e) { /* 미리보기용 */ }
   });
 </script>
