@@ -267,7 +267,9 @@
   .wlbellb{display:inline-flex;align-items:center;gap:3px;font-size:9.8px;font-weight:800;color:#ffd88f;background:rgba(255,209,102,.13);border:1px solid rgba(255,209,102,.32);border-radius:999px;padding:1px 6px;white-space:nowrap;font-variant-numeric:tabular-nums}
   .wlbellb.done{color:#8fd6b8;background:rgba(46,230,168,.1);border-color:rgba(46,230,168,.26)}
   .wlq{flex:0 0 auto;display:flex;flex-direction:column;align-items:flex-end;gap:1px;text-align:right;font-variant-numeric:tabular-nums}
+  .wlpr{display:flex;align-items:baseline;justify-content:flex-end;gap:5px;flex-wrap:wrap;max-width:100%}
   .wlq .wlp{font-size:13.5px;font-weight:800;letter-spacing:-.02em;white-space:nowrap}
+  .wlusd{font-size:10.5px;font-weight:700;color:#8ea6d8;letter-spacing:0;white-space:nowrap;font-variant-numeric:tabular-nums}
   .wlchg{font-size:11px;font-weight:700;white-space:nowrap}
   .wlchg.up{color:#5ef0be}.wlchg.down{color:#ff92a2}.wlchg.flat{color:var(--muted-2)}
   .wlbell{flex:0 0 30px;width:30px;height:30px;border-radius:10px;border:1px solid var(--line);background:rgba(255,255,255,.04);color:#93a1c4;font-size:13px;line-height:1;cursor:pointer;display:grid;place-items:center;transition:all .16s;font-family:inherit}
@@ -294,6 +296,7 @@
   .cvname .small{display:block;font-size:11px;color:var(--muted);font-variant-numeric:tabular-nums}
   .cvprice{text-align:right;min-width:0;font-variant-numeric:tabular-nums}
   .cvprice b{display:block;font-size:19px;font-weight:800;letter-spacing:-.03em;line-height:1.2}
+  .cvusd{display:block;font-size:12.5px;font-weight:800;color:#9fb6ff;font-variant-numeric:tabular-nums;letter-spacing:-.01em;margin-top:1px}
   .cvprice .wlchg{font-size:11.5px}
 
   /* ---------- 목표가 알람 모달 ---------- */
@@ -343,6 +346,7 @@
     .wlbadge{flex-basis:30px;width:30px;height:30px;font-size:12px}
     .wlnm b{font-size:12.8px}
     .wlq .wlp{font-size:13px}
+    .wlusd{font-size:10px}
     .wlchg{font-size:10.5px}
     .wlbell{flex-basis:28px;width:28px;height:28px;font-size:12px}
     .cvname b{font-size:15.5px}
@@ -959,7 +963,7 @@
             <span class="wlbadge" id="coinCvBadge">B</span>
             <div><b id="coinChartTitle">비트코인</b><span class="small" id="coinChartMeta">BTC/KRW · KRW-BTC</span></div>
           </div>
-          <div class="cvprice"><b id="coinChartPrice">–</b><span class="wlchg" id="coinChartChg">–</span></div>
+          <div class="cvprice"><b id="coinChartPrice">–</b><span class="cvusd" id="coinChartUsd" hidden></span><span class="wlchg" id="coinChartChg">–</span></div>
         </div>
         <div class="charthead">
           <span class="chartlinks">
@@ -3571,6 +3575,15 @@
     if (v < 100) return v.toLocaleString('ko-KR', { maximumFractionDigits: 2 }) + '원';
     return Math.round(v).toLocaleString('ko-KR') + '원';
   }
+  /* 달러 표기: 1,000 이상은 정수, 1~1,000은 소수 둘째, 그 미만은 유효숫자 네 자리 유지 */
+  function usdText(v) {
+    var n = Number(v);
+    if (v == null || !isFinite(n) || n <= 0) return '';
+    if (n >= 1000) return '$' + Math.round(n).toLocaleString('en-US');
+    if (n >= 1) return '$' + n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    var digits = Math.min(10, Math.max(4, 3 - Math.floor(Math.log10(n))));
+    return '$' + n.toLocaleString('en-US', { minimumFractionDigits: Math.min(4, digits), maximumFractionDigits: digits });
+  }
   function absText(market, v) {
     if (v == null || !isFinite(v)) return '';
     if (market === 'us') return (v > 0 ? '+' : '') + Number(v).toFixed(2);
@@ -3627,7 +3640,9 @@
       '<div class="wlmain"><div class="wlnm"><b>' + esc(nm) + '</b>' +
       '<button type="button" class="wlstar' + (fav ? ' on' : '') + '" data-star="' + esc(it.id) + '" aria-pressed="' + (fav ? 'true' : 'false') + '" aria-label="' + esc(nm) + ' 즐겨찾기 ' + (fav ? '해제' : '추가') + '">' + (fav ? '★' : '☆') + '</button></div>' +
       '<div class="wlsub"><span class="wlcode">' + esc(sub) + '</span>' + bell + '</div></div>' +
-      '<div class="wlq"><b class="wlp">' + priceText(market, q) + '</b><span class="wlchg ' + chgCls(q) + '">' + chgText(market, q) + '</span></div>' +
+      '<div class="wlq"><div class="wlpr"><b class="wlp">' + priceText(market, q) + '</b>' +
+      (market === 'coin' && usdText(q && q.usd) ? '<span class="wlusd">' + usdText(q && q.usd) + '</span>' : '') +
+      '</div><span class="wlchg ' + chgCls(q) + '">' + chgText(market, q) + '</span></div>' +
       '<button type="button" class="wlbell' + (act.length ? ' on' : '') + '" data-bell="' + esc(it.id) + '" aria-label="' + esc(nm) + ' 목표가 알람 설정">🔔</button>' +
       '</div>';
   }
@@ -3660,8 +3675,13 @@
   function paintChartHeader(market) {
     var id = wl.sel[market];
     var q = wl.quotes[market][id] || null;
-    var p = $(market + 'ChartPrice'), c = $(market + 'ChartChg'), b = $(market + 'CvBadge');
+    var p = $(market + 'ChartPrice'), c = $(market + 'ChartChg'), b = $(market + 'CvBadge'), u = $(market + 'ChartUsd');
     if (p) p.textContent = priceText(market, q);
+    if (u) {
+      var ut = market === 'coin' ? usdText(q && q.usd) : '';
+      u.textContent = ut;
+      u.hidden = !ut;
+    }
     if (c) { c.textContent = chgText(market, q); c.className = 'wlchg ' + chgCls(q); }
     if (b) { b.textContent = initialOf(market, id); b.style.setProperty('--bc', colorOf(id)); b.style.background = colorOf(id); }
   }
@@ -3722,6 +3742,40 @@
           }).catch(function () { /* 없는 코인 */ });
       })).then(function () { return out; });
     });
+  }
+  /* 업비트 원화 시세와 함께 달러 시세(트레이딩뷰 스캐너) — BINANCE → OKX → COINBASE 순 폴백 */
+  function coinSym(id) { return String(id || '').replace(/^KRW-/, '').toUpperCase(); }
+  function fetchCoinUsd() {
+    var syms = [];
+    wl.items.coin.forEach(function (it) {
+      var s = coinSym(it.id);
+      if (s && syms.indexOf(s) < 0) syms.push(s);
+    });
+    var out = {};
+    if (!syms.length) return Promise.resolve(out);
+    if (syms.indexOf('USDT') >= 0) out.USDT = 1; /* 테더는 달러 페그 */
+    function symOf(ticker) { return String(ticker || '').replace(/^[A-Z]+:/, '').replace(/(USDT|USD)$/, ''); }
+    function take(rows) {
+      (rows || []).forEach(function (row) {
+        var v = row && row.d ? Number(row.d[0]) : NaN;
+        if (!isFinite(v) || v <= 0) return;
+        var s = symOf(row.s);
+        if (s && out[s] == null) out[s] = v;
+      });
+      return out;
+    }
+    function missing() { return syms.filter(function (s) { return out[s] == null; }); }
+    return postScan('crypto', syms.map(function (s) { return 'BINANCE:' + s + 'USDT'; })).then(function (rows) {
+      take(rows);
+      var m1 = missing();
+      if (!m1.length) return out;
+      return postScan('crypto', m1.map(function (s) { return 'OKX:' + s + 'USDT'; })).then(function (r2) {
+        take(r2);
+        var m2 = missing();
+        if (!m2.length) return out;
+        return postScan('crypto', m2.map(function (s) { return 'COINBASE:' + s + 'USD'; })).then(take);
+      });
+    }).catch(function () { return out; });
   }
   function postScan(path, tickers) {
     return Promise.all(chunk(tickers, 120).map(function (part) {
@@ -3784,7 +3838,18 @@
     wl.loading[market] = true;
     paintMeta(market);
     var job;
-    try { job = market === 'coin' ? fetchCoins() : fetchScans(market); } catch (e) { job = Promise.reject(e); }
+    try {
+      job = market === 'coin' ? fetchCoins().then(function (map) {
+        /* 달러 시세는 실패해도 원화 시세는 그대로 보여준다 */
+        return fetchCoinUsd().then(function (usd) {
+          Object.keys(map || {}).forEach(function (k) {
+            var v = usd[coinSym(k)];
+            if (v != null && isFinite(Number(v))) map[k].usd = Number(v);
+          });
+          return map;
+        }).catch(function () { return map; });
+      }) : fetchScans(market);
+    } catch (e) { job = Promise.reject(e); }
     job.then(function (map) {
       if (!map) return;
       var q = wl.quotes[market];
