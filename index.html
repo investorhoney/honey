@@ -151,7 +151,54 @@
   .newsdates{display:flex;gap:7px;overflow-x:auto;scrollbar-width:none;margin:0 -18px 12px;padding:2px 18px 4px}
   .newsdates::-webkit-scrollbar{display:none}
   .newsdates .chip[aria-pressed="true"]{background:linear-gradient(140deg,rgba(110,140,255,.95),rgba(160,110,255,.95))}
+  .newscats{
+    position:sticky;top:var(--cat-top,64px);z-index:30;
+    display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;
+    margin:-2px -18px 12px;padding:7px 18px 8px;
+    background:linear-gradient(180deg,rgba(8,12,24,.99) 78%,rgba(8,12,24,.94));
+    backdrop-filter:blur(12px) saturate(140%);-webkit-backdrop-filter:blur(12px) saturate(140%);
+    border-bottom:1px solid rgba(255,255,255,.055);
+  }
+  .newscats::-webkit-scrollbar{display:none}
+  .newscats[hidden]{display:none}
+  .newscats .chip{font-size:11.8px;padding:6.5px 12px;font-weight:700;letter-spacing:-.02em}
+  .newscats .chip .cnt{opacity:.62;font-weight:600;margin-left:4px;font-size:10.5px}
   .newslist{display:flex;flex-direction:column;gap:10px}
+
+  /* ---------- 신문요약 · 분야별 섹션 ---------- */
+  .newssec{margin:8px 0 6px}
+  .newssec-h{display:flex;align-items:center;gap:7px;margin:6px 0 10px;padding:0 2px;scroll-margin-top:120px}
+  .newssec-h .ico{font-size:15px;line-height:1}
+  .newssec-h h3{margin:0;font-size:14px;font-weight:800;letter-spacing:-.025em;color:#e4ebff}
+  .newssec-h .n{
+    font-size:10.5px;font-weight:750;color:#a7b6da;background:rgba(255,255,255,.07);
+    border:1px solid var(--line);border-radius:999px;padding:1.5px 7px;font-variant-numeric:tabular-nums;
+  }
+  .newssec-h .ln{flex:1 1 auto;height:1px;background:linear-gradient(90deg,rgba(255,255,255,.15),rgba(255,255,255,0))}
+  .newssec-b{display:flex;flex-direction:column;gap:10px}
+  .newssec.core .newssec-h h3{color:#ffe2ab}
+  .newssec.core .newssec-h .n{color:#ffd9a0;border-color:rgba(255,196,84,.26);background:rgba(255,196,84,.12)}
+  .artcard{
+    background:linear-gradient(168deg,rgba(255,255,255,.055),rgba(255,255,255,.018));
+    border:1px solid var(--line);border-radius:16px;padding:13px 15px 12px;box-shadow:var(--shadow);
+    animation:rise .3s ease both;
+  }
+  .artcard:hover{border-color:rgba(160,180,255,.3)}
+  .artcard h4{margin:0;font-size:14px;font-weight:780;line-height:1.44;letter-spacing:-.022em;word-break:keep-all;overflow-wrap:anywhere;color:#f2f6ff}
+  .artcard p{margin:7px 0 0;font-size:12.9px;line-height:1.7;color:#c6d2ee;word-break:keep-all;overflow-wrap:anywhere}
+  .artcard .meta{display:flex;align-items:center;gap:7px;margin-top:10px;flex-wrap:wrap}
+  .pressb{
+    font-size:10.5px;font-weight:750;padding:2px 7px;border-radius:6px;white-space:nowrap;
+    border:1px solid var(--line);background:rgba(255,255,255,.06);color:#b6c4e2;
+  }
+  .pressb.mk{color:#ffd9a0;border-color:rgba(255,196,84,.28);background:rgba(255,196,84,.1)}
+  .pressb.hk{color:#a9d8ff;border-color:rgba(90,170,255,.28);background:rgba(90,170,255,.1)}
+  .artcard .srclink{
+    margin-left:auto;font-size:11.5px;font-weight:750;color:#a9b8e8;text-decoration:none;
+    border:1px solid var(--line);border-radius:9px;padding:4px 9px;background:rgba(255,255,255,.04);
+    white-space:nowrap;transition:all .16s;
+  }
+  .artcard .srclink:hover{color:#fff;background:rgba(140,155,255,.18);border-color:rgba(140,155,255,.35)}
   .newsitem{
     display:flex;gap:11px;align-items:flex-start;
     background:linear-gradient(168deg,rgba(255,255,255,.055),rgba(255,255,255,.018));
@@ -183,6 +230,13 @@
     .newsitem h3{font-size:13.6px}
     .newsitem p{font-size:12.3px;line-height:1.58}
     .newshead .newslink{font-size:11px;padding:7px 10px}
+    .newscats{margin:0 -14px 12px;padding-left:14px;padding-right:14px}
+    .newscats .chip{font-size:11.2px;padding:6px 10px}
+    .newssec-h h3{font-size:13.2px}
+    .artcard{padding:12px 13px 11px;border-radius:14px}
+    .artcard h4{font-size:13.4px;line-height:1.44}
+    .artcard p{font-size:12.4px;line-height:1.66}
+    .artcard .meta{margin-top:9px}
   }
 
   /* ---------- panels ---------- */
@@ -707,11 +761,12 @@
       </div>
 
       <div class="newsdates" id="newsDates" role="group" aria-label="날짜 선택"></div>
+      <div class="newscats" id="newsCats" role="group" aria-label="분야 선택" hidden></div>
 
       <div class="newslist" id="newsList" aria-live="polite"></div>
 
       <div class="newsfoot">
-        출처: 네이버 블로그 <b>‘자전과 공전’</b> · 매일 05:00 새 글 업로드 · 새 날짜는 새로고침 없이 자동으로 뜹니다.
+        출처: 네이버 블로그 <b>‘자전과 공전’</b> · 매일 05:00 새 글 업로드 · 분야별 뉴스는 <b>매일경제·한국경제</b>에서 선별 · 새 날짜는 새로고침 없이 자동으로 뜨고, 분야별 뉴스가 없는 날짜는 핵심 10줄만 보입니다.
       </div>
     </section>
 
@@ -4116,8 +4171,8 @@
 <script>
 /* ==================== 신문요약 · 매일 05:00 (네이버 블로그 ‘자전과 공전’) ==================== */
 (function () {
-  var ns = { map: null, date: null, bound: false, loading: true, fetched: false };
-  var CACHE = 'honey.v5.news';
+  var ns = { map: null, date: null, cat: 'all', bound: false, loading: true, fetched: false };
+  var CACHE = 'honey.v6.news';
   var REST = 'https://family-log-56c73-default-rtdb.firebaseio.com/rooms/kgh-invest-scanner-2026/state/dailyNews.json';
   var WD = ['일', '월', '화', '수', '목', '금', '토'];
 
@@ -4154,14 +4209,65 @@
     if (d === 1) return md + ' (어제)';
     return md + ' (' + weekday(k) + ')';
   }
+  var SECTIONS = [
+    { k: 'economy', name: '경제', icon: '📊' },
+    { k: 'realestate', name: '부동산', icon: '🏠' },
+    { k: 'finance', name: '금융', icon: '💰' },
+    { k: 'corporate', name: '기업', icon: '🏢' },
+    { k: 'society', name: '사회', icon: '🏛️' },
+    { k: 'international', name: '국제', icon: '🌍' }
+  ];
+
+  function isArr(v) { return Object.prototype.toString.call(v) === '[object Array]'; }
+  function recSections(rec) {
+    var v = rec && rec.sections;
+    return (v && typeof v === 'object' && !isArr(v)) ? v : {};
+  }
+  function availSections(rec) {
+    var map = recSections(rec);
+    return SECTIONS.filter(function (sec) { return isArr(map[sec.k]) && map[sec.k].length; });
+  }
+  function secBlock(meta, arr) {
+    var cards = arr.map(function (a, i) {
+      var press = (a && a.press) ? String(a.press) : '';
+      var cls = press.indexOf('매일') === 0 ? 'pressb mk' : (press.indexOf('한국') === 0 ? 'pressb hk' : 'pressb');
+      return '<article class="artcard" style="animation-delay:' + Math.min(i * 26, 260) + 'ms">' +
+        '<h4>' + esc((a && a.title) || '') + '</h4>' +
+        ((a && a.summary) ? '<p>' + esc(a.summary) + '</p>' : '') +
+        '<div class="meta">' + (press ? '<span class="' + cls + '">' + esc(press) + '</span>' : '') +
+        ((a && a.url) ? '<a class="srclink" href="' + esc(a.url) + '" target="_blank" rel="noopener">원문 ↗</a>' : '') +
+        '</div></article>';
+    }).join('');
+    return '<section class="newssec" data-sec="' + meta.k + '">' +
+      '<div class="newssec-h"><span class="ico" aria-hidden="true">' + meta.icon + '</span>' +
+      '<h3>' + esc(meta.name) + '</h3><span class="n">' + arr.length + '</span>' +
+      '<span class="ln" aria-hidden="true"></span></div>' +
+      '<div class="newssec-b">' + cards + '</div></section>';
+  }
+  function coreBlock(rec) {
+    var items = (isArr(rec.items) ? rec.items : []).slice().sort(function (a, b) { return (a.num || 0) - (b.num || 0); });
+    var list = items.map(function (it, i) {
+      var press = it.press ? '<span class="npress">' + esc(it.press) + '</span>' : '';
+      var body = it.body ? '<p>' + esc(it.body).replace(/\n/g, '<br>') + press + '</p>' : (press ? '<p>' + press + '</p>' : '');
+      return '<article class="newsitem" style="animation-delay:' + Math.min(i * 22, 260) + 'ms">' +
+        '<span class="nnum">' + (it.num || i + 1) + '</span>' +
+        '<div class="nbody"><h3>' + esc(it.head || it.body || '') + '</h3>' + body + '</div></article>';
+    }).join('');
+    return '<section class="newssec core" data-sec="core">' +
+      '<div class="newssec-h"><span class="ico" aria-hidden="true">📰</span><h3>자전과 공전 · 핵심 10줄</h3>' +
+      '<span class="n">' + items.length + '</span><span class="ln" aria-hidden="true"></span></div>' +
+      '<div class="newssec-b">' + list + '</div></section>';
+  }
+
   function render() {
-    var list = $('newsList'), chips = $('newsDates');
+    var list = $('newsList'), chips = $('newsDates'), cats = $('newsCats');
     if (!list) return;
     var ks = keys();
     var src = $('newsSource');
     if (!ks.length) {
       ns.date = null;
       if (chips) chips.innerHTML = '';
+      if (cats) { cats.innerHTML = ''; cats.hidden = true; }
       if ($('newsTitle')) $('newsTitle').textContent = '신문을 통해 알게 된 것들';
       if ($('newsSub')) $('newsSub').innerHTML = '<span>' + (ns.loading ? '불러오는 중…' : '아직 올라온 요약이 없어요') + '</span>';
       if (src) src.href = 'https://blog.naver.com/abcd9361';
@@ -4182,21 +4288,48 @@
       }).join('');
     }
     var rec = ns.map[ns.date];
+    var secMap = recSections(rec);
+    var secs = availSections(rec);
+    var coreN = isArr(rec.items) ? rec.items.length : 0;
+    var secTotal = secs.reduce(function (n, x) { return n + secMap[x.k].length; }, 0);
+    if (ns.cat !== 'all' && ns.cat !== 'core' && !secs.some(function (x) { return x.k === ns.cat; })) ns.cat = 'all';
+    if (!secs.length) ns.cat = 'all';
+
+    if (cats) {
+      if (!secs.length) {
+        cats.innerHTML = '';
+        cats.hidden = true;
+      } else {
+        cats.hidden = false;
+        var catDefs = [{ k: 'all', label: '전체', n: coreN + secTotal }, { k: 'core', label: '핵심 10줄', n: coreN }]
+          .concat(secs.map(function (x) { return { k: x.k, label: x.icon + ' ' + x.name, n: secMap[x.k].length }; }));
+        cats.innerHTML = catDefs.map(function (c) {
+          return '<button class="chip" type="button" data-newscat="' + c.k + '" aria-pressed="' + (ns.cat === c.k) + '">' +
+            esc(c.label) + '<span class="cnt">' + c.n + '</span></button>';
+        }).join('');
+      }
+    }
+
     if ($('newsTitle')) $('newsTitle').textContent = rec.title || (ns.date + ' 신문 요약');
     if ($('newsSub')) {
       var p = ns.date.split('-');
       $('newsSub').innerHTML = '<span>' + p[0] + '년 ' + (+p[1]) + '월 ' + (+p[2]) + '일 (' + weekday(ns.date) + ')</span>' +
-        '<span class="d">·</span><span>항목 ' + rec.items.length + '개</span>' +
-        '<span class="d">·</span><span>출처 ‘자전과 공전’</span>';
+        '<span class="d">·</span><span>핵심 ' + coreN + '줄</span>' +
+        (secTotal ? '<span class="d">·</span><span>분야 뉴스 ' + secTotal + '건</span>' : '') +
+        '<span class="d">·</span><span>출처 ‘자전과 공전’' + (secTotal ? ' · 매일경제·한국경제' : '') + '</span>';
     }
     if (src) src.href = rec.sourceUrl || 'https://blog.naver.com/abcd9361';
-    list.innerHTML = rec.items.slice().sort(function (a, b) { return (a.num || 0) - (b.num || 0); }).map(function (it, i) {
-      var press = it.press ? '<span class="npress">' + esc(it.press) + '</span>' : '';
-      var body = it.body ? '<p>' + esc(it.body).replace(/\n/g, '<br>') + press + '</p>' : (press ? '<p>' + press + '</p>' : '');
-      return '<article class="newsitem" style="animation-delay:' + Math.min(i * 22, 260) + 'ms">' +
-        '<span class="nnum">' + (it.num || i + 1) + '</span>' +
-        '<div class="nbody"><h3>' + esc(it.head || it.body || '') + '</h3>' + body + '</div></article>';
-    }).join('');
+
+    var html = '';
+    if (!secs.length || ns.cat === 'core') {
+      html = coreBlock(rec);
+    } else if (ns.cat === 'all') {
+      html = coreBlock(rec);
+      secs.forEach(function (x) { html += secBlock(x, secMap[x.k]); });
+    } else {
+      secs.forEach(function (x) { if (x.k === ns.cat) html += secBlock(x, secMap[x.k]); });
+    }
+    list.innerHTML = html;
   }
   function ingest(val, remote) {
     ns.loading = false;
@@ -4244,6 +4377,25 @@
       var b = e.target.closest('[data-newsdate]');
       if (!b) return;
       ns.date = b.getAttribute('data-newsdate');
+      ns.cat = 'all';
+      render();
+      try { window.scrollTo({ top: 0, behavior: 'smooth' }); } catch (err) { /* ignore */ }
+    });
+    var cats = $('newsCats');
+    function catTop() {
+      var tb = document.querySelector('.tabbar');
+      if (!tb || !cats) return;
+      cats.style.setProperty('--cat-top', Math.max(0, Math.round(tb.getBoundingClientRect().height)) + 'px');
+    }
+    catTop();
+    window.addEventListener('resize', catTop);
+    window.addEventListener('orientationchange', function () { setTimeout(catTop, 220); });
+    if (cats) cats.addEventListener('click', function (e) {
+      var b = e.target.closest('[data-newscat]');
+      if (!b) return;
+      var k = b.getAttribute('data-newscat');
+      if (k === ns.cat) return;
+      ns.cat = k;
       render();
       try { window.scrollTo({ top: 0, behavior: 'smooth' }); } catch (err) { /* ignore */ }
     });
