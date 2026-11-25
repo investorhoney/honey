@@ -323,6 +323,51 @@
   .cm-en{margin:7px 0 0;padding:9px 11px;border-radius:10px;background:rgba(255,255,255,.03);border:1px solid var(--line);font-size:11.3px;line-height:1.62;color:#9fadcd;white-space:pre-wrap;overflow-wrap:anywhere}
   .ramfoot{margin-top:4px;padding-top:10px;border-top:1px dashed rgba(255,255,255,.09);font-size:10.8px;color:var(--muted-2);line-height:1.65}
   .ramfoot b{color:#a9b8da;font-weight:700}
+  /* 환율·구간 칩·다나와 */
+  .ramfx{display:flex;align-items:center;gap:6px 8px;flex-wrap:wrap;margin:0 0 10px}
+  .ramfx .fxb{display:inline-flex;align-items:baseline;gap:5px;padding:5px 11px;border-radius:999px;border:1px solid rgba(140,160,255,.28);
+    background:rgba(110,140,255,.13);font-size:11.4px;font-weight:750;color:#c7d4ff;white-space:nowrap}
+  .ramfx .fxb b{font-size:12.6px;font-weight:800;color:#fff;font-variant-numeric:tabular-nums}
+  .ramfx .fxn{font-size:10.6px;color:var(--muted-2)}
+  .ramsegs{display:flex;gap:6px;overflow-x:auto;padding:0 1px 10px;margin:0;scrollbar-width:none}
+  .ramsegs::-webkit-scrollbar{display:none}
+  .ramseg{flex:0 0 auto;appearance:none;cursor:pointer;font-family:inherit;font-size:11.6px;font-weight:750;color:#b9c6e6;
+    background:rgba(255,255,255,.045);border:1px solid var(--line);border-radius:999px;padding:7px 12px;white-space:nowrap;transition:background .15s,color .15s}
+  .ramseg[aria-pressed="true"]{color:#fff;background:linear-gradient(140deg,rgba(110,140,255,.44),rgba(160,110,255,.32));border-color:rgba(150,165,255,.52)}
+  .ramsec[hidden]{display:none}
+  .ramsec-h{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;margin:14px 0 8px}
+  .ramsec-h:first-child{margin-top:0}
+  .ramsec-h h3{margin:0;font-size:13.6px;font-weight:800;letter-spacing:-.025em}
+  .ramsec-h .sh-src{margin-left:auto;font-size:10.4px;color:var(--muted-2);text-align:right}
+  .ramsec-h .sh-src a{color:#a9b8e8;text-decoration:none}
+  .dlist{border:1px solid var(--line);border-radius:16px;overflow:hidden;margin-bottom:12px;
+    background:linear-gradient(168deg,rgba(255,255,255,.05),rgba(255,255,255,.014));box-shadow:var(--shadow)}
+  .drow{display:flex;gap:9px;align-items:flex-start;padding:10px 12px;border-top:1px solid rgba(255,255,255,.06)}
+  .drow:first-child{border-top:0}
+  .drank{flex:0 0 19px;padding-top:2px;font-size:10.6px;font-weight:800;color:#8fa2d6;font-variant-numeric:tabular-nums}
+  .drank.top{color:#ffd479}
+  .dmain{min-width:0;flex:1 1 auto}
+  .dname{display:block;font-size:12.6px;font-weight:750;letter-spacing:-.02em;line-height:1.35;color:#e9eefc;text-decoration:none;overflow-wrap:anywhere}
+  .dname:hover{color:#fff;text-decoration:underline}
+  .dspec{display:block;margin-top:2px;font-size:10.3px;color:var(--muted-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .dprice{flex:0 0 auto;text-align:right;font-variant-numeric:tabular-nums}
+  .dprice b{display:block;font-size:13.2px;font-weight:800;letter-spacing:-.02em;line-height:1.3;white-space:nowrap}
+  .dprice .dcap{display:block;font-size:10.2px;font-weight:650;color:#9fadcd;white-space:nowrap}
+  .gwrap{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-bottom:12px}
+  .gcard{border:1px solid var(--line);border-radius:16px;padding:10px 12px 3px;
+    background:linear-gradient(168deg,rgba(255,255,255,.05),rgba(255,255,255,.015));box-shadow:var(--shadow);min-width:0}
+  .gcard h4{margin:0;display:flex;align-items:baseline;gap:7px;font-size:12.6px;font-weight:800;letter-spacing:-.02em}
+  .gcard h4 em{font-style:normal;margin-left:auto;font-size:10.3px;font-weight:700;color:#ffd479;white-space:nowrap}
+  .grow{padding:8px 0 7px;border-top:1px solid rgba(255,255,255,.06)}
+  .gcard h4 + .grow{margin-top:7px}
+  .grow a{display:block;font-size:11.6px;font-weight:700;color:#dde5fb;line-height:1.38;text-decoration:none;overflow-wrap:anywhere}
+  .grow a:hover{color:#fff;text-decoration:underline}
+  .g-p{display:flex;align-items:baseline;gap:6px;margin-top:2px;flex-wrap:wrap}
+  .g-p b{font-size:12.2px;font-weight:800;font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+  .g-p span{font-size:10px;color:var(--muted-2);font-variant-numeric:tabular-nums}
+  .won{display:block;font-size:10.4px;font-weight:750;color:#9fe6c4;font-variant-numeric:tabular-nums;letter-spacing:-.01em}
+  .ramdxi .won{display:inline;margin-left:6px}
+  .rr-range .won{display:inline;margin-left:4px}
   @media (max-width:760px){
     .ramhead{margin:14px 0 10px;gap:8px}
     .ramhead h2{font-size:17px}
@@ -337,6 +382,16 @@
     .rr-nm b{font-size:12.2px}
     .rr-q b{font-size:13.3px}
     .ramcmt{padding:11px 12px 6px;border-radius:14px}
+    .ramfx{margin-bottom:8px}
+    .ramfx .fxb{font-size:10.8px;padding:4px 9px}
+    .ramfx .fxb b{font-size:11.8px}
+    .ramseg{font-size:11px;padding:6px 11px}
+    .drow{padding:9px 11px;gap:7px}
+    .dname{font-size:12px}
+    .dprice b{font-size:12.4px}
+    .gwrap{grid-template-columns:minmax(0,1fr);gap:8px}
+    .gcard{padding:9px 11px 2px;border-radius:14px}
+    .hlc .won{font-size:9.9px}
     .cm-ko{font-size:12px;line-height:1.62}
   }
 
@@ -992,8 +1047,8 @@
     <section class="panel" id="panel-ram" role="tabpanel" aria-label="램시세">
       <div class="ramhead">
         <div class="rh-main">
-          <span class="rh-kicker">💾 DRAMeXchange 현물가</span>
-          <h2>램(DRAM) 시세</h2>
+          <span class="rh-kicker">💾 DRAMeXchange + 다나와 시세</span>
+          <h2>램(DRAM) · PC 부품 시세</h2>
           <div class="rh-sub" id="ramSub"><span>불러오는 중…</span></div>
         </div>
         <div class="rh-acts">
@@ -1002,6 +1057,19 @@
         </div>
       </div>
 
+      <div class="ramfx" id="ramFx">
+        <span class="fxb">적용 환율 1$ = <b id="ramFxRate">–</b>원</span>
+        <span class="fxn" id="ramFxNote">환율을 불러오는 중…</span>
+      </div>
+
+      <div class="ramsegs" id="ramSegs" role="group" aria-label="램시세 구간 선택">
+        <button type="button" class="ramseg" data-seg="all" aria-pressed="true">전체</button>
+        <button type="button" class="ramseg" data-seg="global" aria-pressed="false">글로벌 DRAM</button>
+        <button type="button" class="ramseg" data-seg="danawaRam" aria-pressed="false">다나와 램</button>
+        <button type="button" class="ramseg" data-seg="gpu" aria-pressed="false">RTX 5060Ti~5090</button>
+      </div>
+
+      <div class="ramsec" id="secGlobal" data-sec="global">
       <div class="ramdxi" id="ramDxi" hidden></div>
       <div class="ramhl" id="ramHl" aria-label="한눈에 보는 핵심"></div>
 
@@ -1013,6 +1081,17 @@
       </details>
 
       <div class="ramcmt" id="ramCmt"></div>
+      </div>
+
+      <div class="ramsec" id="secDanawa" data-sec="danawaRam" hidden>
+        <div class="ramsec-h"><h3>다나와 램 인기상품순</h3><span class="sh-src" id="ramDanawaSrc"></span></div>
+        <div class="dlist" id="ramDanawaList"></div>
+      </div>
+
+      <div class="ramsec" id="secGpu" data-sec="gpu" hidden>
+        <div class="ramsec-h"><h3>그래픽카드 RTX 5060 Ti ~ 5090 · 인기상품순</h3><span class="sh-src" id="ramGpuSrc"></span></div>
+        <div class="gwrap" id="ramGpuWrap"></div>
+      </div>
 
       <div class="ramfoot" id="ramFoot"></div>
     </section>
@@ -1479,7 +1558,7 @@
   };
   var TABS = [
     { id: 'news', label: '신문요약', icon: 'news' },
-    { id: 'ram', label: '램시세', icon: 'ram' },
+    { id: 'ram', label: '램·PC시세', icon: 'ram' },
     { id: 'poly', label: '폴리마켓', icon: 'globe' },
     { id: 'coin', label: '코인마켓', icon: 'coin' },
     { id: 'kr', label: '국내주식', icon: 'chart' },
@@ -5537,8 +5616,9 @@
 <script>
 /* ==================== 💾 램시세 · DRAMeXchange (TrendForce) ==================== */
 (function () {
-  var ns = { data: null, loading: true, fetched: false, bound: false };
-  var CACHE = 'honey.v9.ramPrices';
+  var ns = { data: null, loading: true, fetched: false, bound: false, seg: 'all', liveFx: null };
+  var CACHE = 'honey.v10.ramPrices';
+  var FXKEY = 'honey.v10.usdKrw';
   var REST = 'https://family-log-56c73-default-rtdb.firebaseio.com/rooms/kgh-invest-scanner-2026/state/ramPrices.json';
   var ORDER = ['dram', 'module'];
   var EXTRA = ['flash', 'gddr', 'wafer', 'card'];
@@ -5557,6 +5637,23 @@
     return v.toLocaleString('en-US', { minimumFractionDigits: d, maximumFractionDigits: d });
   }
   function usd(v, d) { return isNum(v) ? '$' + num(v, d == null ? 3 : d) : '–'; }
+  function rate() {
+    if (isNum(ns.liveFx)) return ns.liveFx;
+    var f = ns.data && ns.data.fx;
+    return f && isNum(f.usdKrw) ? f.usdKrw : null;
+  }
+  function wonStr(v) {
+    var r = rate();
+    if (!isNum(v) || !isNum(r)) return '';
+    return '약 ' + Math.round(v * r).toLocaleString('en-US') + '원';
+  }
+  function won(v) { var s = wonStr(v); return s ? '<span class="won">' + s + '</span>' : ''; }
+  function wonRange(low, high) {
+    var r = rate();
+    if (!isNum(low) || !isNum(high) || !isNum(r)) return '';
+    return '<span><i>원화</i>' + Math.round(low * r).toLocaleString('en-US') + ' ~ ' + Math.round(high * r).toLocaleString('en-US') + '원</span>';
+  }
+  function wonNum(v) { var r = rate(); return isNum(v) && isNum(r) ? Math.round(v * r).toLocaleString('en-US') + '원' : '–'; }
   function pct(v) {
     if (!isNum(v)) return '–';
     return (v > 0 ? '+' : '') + v.toFixed(2) + '%';
@@ -5577,6 +5674,7 @@
     return '<div class="hlc">' +
       '<span class="hk">' + esc(h.label || '') + '</span>' +
       '<b class="hv" title="' + esc(h.item || '') + '">' + (isDxi ? num(h.avg, 2) : usd(h.avg, 3)) + '</b>' +
+      (isDxi ? '' : won(h.avg)) +
       '<span class="hc ramchg ' + dirOf(h.chg) + '">' + pct(h.chg) +
       (h.chgLabel ? ' <i style="font-style:normal;font-weight:600;opacity:.62">' + esc(h.chgLabel) + '</i>' : '') + '</span>' +
       '</div>';
@@ -5605,10 +5703,12 @@
           '<div class="rr-nm"><b>' + esc(r.item) + '</b>' +
             (r.makers ? '<span title="' + esc(r.makers) + '">' + esc(r.makers) + '</span>' : '') + '</div>' +
           '<div class="rr-q"><b>' + usd(r.avg, 3) + '</b>' +
+            won(r.avg) +
             '<span class="ramchg ' + dirOf(r.chg) + '">' + pct(r.chg) + '</span></div>' +
         '</div>' +
         '<div class="rr-range">' +
           '<span><i>' + (weekly ? '주간' : '당일') + '</i>' + num(r.low, 2) + ' ~ ' + num(r.high, 2) + '</span>' +
+          wonRange(r.low, r.high) +
           '<span><i>세션</i>' + num(r.sLow, 2) + ' ~ ' + num(r.sHigh, 2) + '</span>' +
         '</div></div>';
     }).join('');
@@ -5635,12 +5735,89 @@
     return '<div class="cm-head"><h3>DRAMeXchange 최신 시황 코멘트</h3><span class="cm-src">Daily Express · 영문 원문 + 한국어 요약</span></div>' + items;
   }
 
+  function fxBar() {
+    var el = $('ramFxRate'), note = $('ramFxNote'), r = rate();
+    if (el) el.textContent = isNum(r) ? Math.round(r).toLocaleString('en-US') : '–';
+    if (!note) return;
+    var f = ns.data && ns.data.fx, bits = [];
+    if (ns.liveFx) bits.push('방금 조회한 환율');
+    else if (f && f.updatedAt) bits.push('기준 ' + f.updatedAt);
+    if (ns.liveFx && f && isNum(f.usdKrw)) bits.push('저장값 ' + Math.round(f.usdKrw).toLocaleString('en-US') + '원');
+    bits.push('환율은 하루 한 번 갱신 · 달러 옆 원화는 환산 참고값');
+    note.textContent = bits.join(' · ');
+  }
+
+  function danawaSrc(d) {
+    return d && d.fetchedAt
+      ? esc(d.fetchedAt) + ' 기준 · ' + esc(d.sort || '인기상품순') +
+        (d.url ? ' · <a href="' + esc(d.url) + '" target="_blank" rel="noopener">다나와 ↗</a>' : '')
+      : '';
+  }
+
+  function danawaRamBlock(d) {
+    var list = $('ramDanawaList'), src = $('ramDanawaSrc');
+    if (list) {
+      var items = d && d.items;
+      list.innerHTML = (items && items.length)
+        ? items.map(function (it) {
+            var vs = (it.variants || []).filter(function (v) { return isNum(v.price); });
+            var alt = vs.map(function (v) { return v.cap + ' ' + v.price.toLocaleString('en-US') + '원'; }).join(' · ');
+            return '<div class="drow">' +
+              '<span class="drank' + (it.rank === 1 ? ' top' : '') + '">' + esc(it.rank || '') + '</span>' +
+              '<div class="dmain"><a class="dname" href="' + esc(it.url || '#') + '" target="_blank" rel="noopener">' + esc(it.name) + '</a>' +
+              '<span class="dspec" title="' + esc(alt || it.spec || '') + '">' + esc(it.spec || '') + '</span></div>' +
+              '<div class="dprice"><b>' + (isNum(it.price) ? it.price.toLocaleString('en-US') + '원' : '–') + '</b>' +
+              (it.cap ? '<span class="dcap">' + esc(it.cap) + ' 최저가</span>' : '') + '</div></div>';
+          }).join('')
+        : '<div class="drow"><div class="dmain" style="color:var(--muted);font-size:12px;padding:6px 0">다나와 램 시세를 아직 받지 못했어요.</div></div>';
+    }
+    if (src) src.innerHTML = danawaSrc(d);
+  }
+
+  function gpuBlock(d) {
+    var wrap = $('ramGpuWrap'), src = $('ramGpuSrc'), groups = d && d.groups;
+    if (wrap) {
+      wrap.innerHTML = (groups && groups.length)
+        ? groups.map(function (g) {
+            var items = (g.items || []).slice(0, 3), low = null;
+            items.forEach(function (it) { if (isNum(it.price) && (low === null || it.price < low)) low = it.price; });
+            return '<section class="gcard"><h4>' + esc(g.chip || '') +
+              (isNum(low) ? '<em>최저 ' + low.toLocaleString('en-US') + '원</em>' : '') + '</h4>' +
+              items.map(function (it) {
+                return '<div class="grow"><a href="' + esc(it.url || '#') + '" target="_blank" rel="noopener">' + esc(it.name) + '</a>' +
+                  '<div class="g-p"><b>' + (isNum(it.price) ? it.price.toLocaleString('en-US') + '원' : '–') + '</b>' +
+                  (it.spec ? '<span>' + esc(it.spec) + '</span>' : '') +
+                  '</div></div>';
+              }).join('') + '</section>';
+          }).join('')
+        : '<div class="gcard" style="grid-column:1/-1;padding:18px 14px"><div style="text-align:center;color:var(--muted);font-size:12px">그래픽카드 시세를 아직 받지 못했어요.</div></div>';
+    }
+    if (src) src.innerHTML = danawaSrc(d);
+  }
+
+  function applySeg() {
+    var seg = ns.seg || 'all';
+    var map = { secGlobal: 'global', secDanawa: 'danawaRam', secGpu: 'gpu' };
+    Object.keys(map).forEach(function (id) {
+      var el = $(id);
+      if (el) el.hidden = !(seg === 'all' || seg === map[id]);
+    });
+    var btns = document.querySelectorAll('#ramSegs .ramseg');
+    for (var i = 0; i < btns.length; i++) {
+      btns[i].setAttribute('aria-pressed', btns[i].getAttribute('data-seg') === seg ? 'true' : 'false');
+    }
+  }
+
   function render() {
     var data = ns.data;
     var cards = $('ramCards'), extra = $('ramExtra'), sub = $('ramSub'), foot = $('ramFoot'),
       hl = $('ramHl'), cmt = $('ramCmt'), more = $('ramMore'), src = $('ramSource');
     if (!data) {
       dxiBlock(null);
+      fxBar();
+      danawaRamBlock(null);
+      gpuBlock(null);
+      applySeg();
       if (hl) hl.innerHTML = '';
       if (extra) extra.innerHTML = '';
       if (cmt) cmt.innerHTML = '';
@@ -5660,6 +5837,10 @@
     }
     var t = data.tables || {};
     dxiBlock(data.dxi);
+    fxBar();
+    danawaRamBlock(data.danawaRam);
+    gpuBlock(data.danawaGpu);
+    applySeg();
     if (hl) hl.innerHTML = (data.highlights || []).slice(0, 4).map(hlCard).join('');
     if (cards) cards.innerHTML = ORDER.map(function (k) { return tableBlock(k, t[k]); }).join('');
     if (extra) extra.innerHTML = EXTRA.map(function (k) { return tableBlock(k, t[k]); }).join('');
@@ -5672,12 +5853,13 @@
       sub.innerHTML = '<span>기준 ' + esc(shortKst(data.spotUpdatedKst)) + '</span>' +
         '<span class="d">·</span><span>칩 ' + nD + '종</span>' +
         (nM ? '<span class="d">·</span><span>모듈 ' + nM + '종</span>' : '') +
-        '<span class="d">·</span><span>출처 DRAMeXchange</span>';
+        (isNum(rate()) ? '<span class="d">·</span><span>1$ = ' + Math.round(rate()).toLocaleString('en-US') + '원</span>' : '') +
+        '<span class="d">·</span><span>출처 DRAMeXchange · 다나와</span>';
     }
     if (foot) {
-      foot.innerHTML = '참고: DRAMeXchange 현물가는 <b>1일 여러 차례 세션</b>으로 갱신됩니다 · 이 탭은 열 때마다 저장된 최신 값을 다시 읽습니다' +
+      foot.innerHTML = '참고: DRAMeXchange 현물가는 <b>1일 여러 차례 세션</b>으로 갱신되고, 다나와 램·그래픽카드는 <b>인기상품순 최저가</b>를 수집 시점 기준으로 보여줍니다' +
         (data.fetchedLabel ? ' · 마지막 수집 ' + esc(data.fetchedLabel) : '') +
-        ' · 표마다 기준 시각이 다르며, 주황색 시각은 그 표의 최근 갱신이 아닙니다.';
+        ' · 달러 가격 옆 원화는 적용 환율로 환산한 참고값이며, 표마다 기준 시각이 다릅니다.';
     }
   }
 
@@ -5689,12 +5871,15 @@
     render();
   }
   function loadCache() {
-    try {
-      var raw = localStorage.getItem(CACHE);
-      if (!raw) return;
-      var v = JSON.parse(raw);
-      if (v && typeof v === 'object' && v.tables) { ns.data = v; ns.loading = false; }
-    } catch (e) { /* ignore */ }
+    var keys = [CACHE, 'honey.v9.ramPrices'];
+    for (var i = 0; i < keys.length; i++) {
+      try {
+        var raw = localStorage.getItem(keys[i]);
+        if (!raw) continue;
+        var v = JSON.parse(raw);
+        if (v && typeof v === 'object' && v.tables) { ns.data = v; ns.loading = false; return; }
+      } catch (e) { /* ignore */ }
+    }
   }
   function restFetch(silent) {
     return fetch(REST + (REST.indexOf('?') < 0 ? '?t=' : '&t=') + Date.now(), { cache: 'no-store' })
@@ -5720,16 +5905,45 @@
     restFetch(false);
   }
 
+  function liveFx(force) {
+    var now = Date.now();
+    if (!force) {
+      try {
+        var c = JSON.parse(localStorage.getItem(FXKEY) || 'null');
+        if (c && isNum(c.rate) && (now - c.t) < 3 * 3600 * 1000) { ns.liveFx = c.rate; return; }
+      } catch (e) { /* ignore */ }
+    }
+    fetch('https://open.er-api.com/v6/latest/USD', { cache: 'no-store' })
+      .then(function (r) { return r.json(); })
+      .then(function (d) {
+        var v = d && d.rates && d.rates.KRW;
+        if (!isNum(v)) return;
+        ns.liveFx = v;
+        try { localStorage.setItem(FXKEY, JSON.stringify({ rate: v, t: Date.now() })); } catch (e) { /* ignore */ }
+        render();
+      })
+      .catch(function () { /* 저장된 환율로 계속 */ });
+  }
+
   function init() {
     var btn = $('ramRefresh');
     if (btn) btn.addEventListener('click', function () {
       btn.setAttribute('aria-busy', 'true');
       var done = function () { btn.removeAttribute('aria-busy'); };
+      liveFx(true);
       Promise.resolve(refresh()).then(done, done);
       setTimeout(done, 6000);
     });
+    var segs = $('ramSegs');
+    if (segs) segs.addEventListener('click', function (e) {
+      var b = e.target && e.target.closest ? e.target.closest('.ramseg') : null;
+      if (!b || !segs.contains(b)) return;
+      ns.seg = b.getAttribute('data-seg') || 'all';
+      applySeg();
+    });
     loadCache();
     render();
+    liveFx(false);
     bindRemote();
     setTimeout(function () { if (!ns.fetched) restFetch(true); }, 4000);
   }
