@@ -5,8 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex, nofollow">
 <meta name="theme-color" content="#080c18">
-<meta name="description" content="매일 아침 5시 신문 요약 + 폴리마켓 세상물정 스캐너 + 코인마켓·국내주식·미국주식 실시간 차트 + 주식 사진첩·매매일지·복기 메모를 한 화면에서">
-<title>투자 스캐너 · 신문요약 · 폴리마켓 · 코인 · 주식</title>
+<meta name="description" content="매일 아침 5시 신문 요약 + 램(DRAM) 현물가(DRAMeXchange) + 폴리마켓 세상물정 스캐너 + 코인마켓·국내주식·미국주식 실시간 차트 + 주식 사진첩·매매일지·복기 메모를 한 화면에서">
+<title>투자 스캐너 · 신문요약 · 램시세 · 폴리마켓 · 코인 · 주식</title>
 <style>
   :root{
     --bg:#080c18;
@@ -121,7 +121,7 @@
   .tab:hover{color:var(--cream-ink);background:#FBF3E4}
   .tab.on{color:var(--cream-ink);background:var(--cream-soft);box-shadow:inset 0 0 0 1px #F7E3A0}
   @media (min-width:860px){
-    .tabbar-in{display:grid;grid-template-columns:repeat(8,minmax(0,1fr));max-width:1000px;margin:0 auto}
+    .tabbar-in{display:grid;grid-template-columns:repeat(9,minmax(0,1fr));max-width:1060px;margin:0 auto}
     .tab{width:100%;padding:9px 10px;font-size:14px;letter-spacing:-.02em}
     .tab svg{width:22px;height:22px;margin-bottom:1px}
   }
@@ -237,6 +237,107 @@
     .artcard h4{font-size:13.4px;line-height:1.44}
     .artcard p{font-size:12.4px;line-height:1.66}
     .artcard .meta{margin-top:9px}
+  }
+
+  /* ---------- 💾 램시세 (DRAMeXchange) ---------- */
+  #panel-ram{max-width:940px;margin:0 auto}
+  .ramhead{display:flex;align-items:flex-start;gap:12px;margin:18px 0 12px;flex-wrap:wrap}
+  .ramhead .rh-main{min-width:0;flex:1 1 220px}
+  .ramhead .rh-kicker{
+    display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:750;letter-spacing:.01em;
+    color:#bcd0ff;background:rgba(110,140,255,.14);border:1px solid rgba(140,160,255,.28);
+    padding:4px 9px;border-radius:999px;white-space:nowrap;
+  }
+  .ramhead h2{margin:9px 0 5px;font-size:20px;font-weight:800;letter-spacing:-.032em;line-height:1.3;word-break:keep-all}
+  .ramhead .rh-sub{display:flex;align-items:center;gap:2px 8px;flex-wrap:wrap;font-size:11.5px;color:var(--muted)}
+  .ramhead .rh-sub .d{color:var(--muted-2)}
+  .ramhead .rh-acts{flex:0 0 auto;display:flex;align-items:center;gap:6px;margin-left:auto}
+  .ramhead .ramlink{
+    font-size:11.5px;padding:8px 11px;border-radius:11px;font-weight:700;text-decoration:none;white-space:nowrap;
+    color:#dfe6ff;background:linear-gradient(140deg,rgba(110,140,255,.22),rgba(160,110,255,.18));border:1px solid rgba(140,150,255,.3);
+  }
+  .ramhead .ramlink:hover{background:linear-gradient(140deg,rgba(110,140,255,.34),rgba(160,110,255,.3));color:#fff}
+  .ramdxi{
+    display:flex;align-items:center;gap:6px 12px;flex-wrap:wrap;
+    border:1px solid rgba(140,160,255,.24);border-radius:16px;padding:12px 14px;margin:0 0 10px;
+    background:linear-gradient(150deg,rgba(111,140,255,.16),rgba(255,255,255,.02) 62%);
+  }
+  .ramdxi .dx-wrap{min-width:0;flex:1 1 auto}
+  .ramdxi .dx-k{display:block;font-size:10.8px;font-weight:750;color:#a9b8e8;letter-spacing:.01em}
+  .ramdxi .dx-v{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;margin-top:2px}
+  .ramdxi .dx-v b{font-size:22px;font-weight:800;letter-spacing:-.03em;font-variant-numeric:tabular-nums;line-height:1.15}
+  .ramdxi .dx-c{font-size:12.5px;font-weight:800;font-variant-numeric:tabular-nums;white-space:nowrap}
+  .ramdxi .dx-t{flex:0 0 auto;font-size:10.3px;color:var(--muted-2);text-align:right;line-height:1.5;font-variant-numeric:tabular-nums;margin-left:auto}
+  .ramhl{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin:0 0 16px}
+  .hlc{border:1px solid var(--line);border-radius:14px;padding:9px 11px;background:var(--panel);min-width:0}
+  .hlc .hk{display:block;font-size:10.4px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .hlc .hv{display:block;margin-top:3px;font-size:15px;font-weight:800;letter-spacing:-.025em;font-variant-numeric:tabular-nums;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .hlc .hc{display:block;margin-top:1px;font-size:10.8px;font-weight:750;font-variant-numeric:tabular-nums;white-space:nowrap}
+  .ramchg.up{color:var(--up)}
+  .ramchg.down{color:var(--down)}
+  .ramchg.flat{color:var(--muted-2)}
+  .ramcard{
+    border:1px solid var(--line);border-radius:16px;padding:12px 14px 4px;margin-bottom:11px;
+    background:linear-gradient(168deg,rgba(255,255,255,.05),rgba(255,255,255,.016));box-shadow:var(--shadow);
+  }
+  .rc-head{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;margin-bottom:6px}
+  .rc-head h3{margin:0;font-size:13.8px;font-weight:800;letter-spacing:-.025em;line-height:1.35}
+  .rc-head h3 em{font-style:normal;font-size:10.8px;font-weight:650;color:var(--muted);margin-left:5px;letter-spacing:0}
+  .rc-time{margin-left:auto;font-size:10.3px;color:var(--muted-2);font-variant-numeric:tabular-nums;white-space:nowrap}
+  .rc-time.old{color:#d8a75a}
+  .ramrow{padding:9px 0 8px;border-top:1px solid rgba(255,255,255,.06)}
+  .ramrow:first-child{border-top:0;padding-top:2px}
+  .rr-top{display:flex;align-items:flex-start;gap:8px}
+  .rr-nm{min-width:0;flex:1 1 auto}
+  .rr-nm b{display:block;font-size:12.7px;font-weight:750;letter-spacing:-.02em;line-height:1.35;overflow-wrap:anywhere}
+  .rr-nm span{display:block;margin-top:1px;font-size:10px;color:var(--muted-2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .rr-q{flex:0 0 auto;display:flex;flex-direction:column;align-items:flex-end;font-variant-numeric:tabular-nums}
+  .rr-q b{font-size:14px;font-weight:800;letter-spacing:-.02em;white-space:nowrap;line-height:1.3}
+  .rr-q span{font-size:10.8px;font-weight:750;white-space:nowrap;line-height:1.4}
+  .rr-range{display:flex;gap:2px 12px;flex-wrap:wrap;margin-top:3px;font-size:10.4px;color:#9fadcd;font-variant-numeric:tabular-nums}
+  .rr-range i{font-style:normal;color:var(--muted-2);margin-right:4px}
+  .rammore{border:1px solid var(--line);border-radius:16px;background:rgba(255,255,255,.02);margin-bottom:11px;overflow:hidden}
+  .rammore > summary{cursor:pointer;padding:11px 14px;font-size:12.4px;font-weight:750;color:#c6d2ee;list-style:none;display:flex;align-items:center;gap:7px}
+  .rammore > summary::-webkit-details-marker{display:none}
+  .rammore > summary .arw{transition:transform .18s;color:var(--muted-2);font-size:10px}
+  .rammore[open] > summary{border-bottom:1px solid var(--line)}
+  .rammore[open] > summary .arw{transform:rotate(90deg)}
+  .rammore > .ramcard{border:0;border-radius:0;box-shadow:none;background:none;margin:0;padding:10px 14px 2px}
+  .rammore > .ramcard + .ramcard{border-top:1px solid rgba(255,255,255,.06)}
+  .ramcmt{border:1px solid var(--line);border-radius:16px;padding:12px 14px 8px;background:var(--panel-2);margin-bottom:11px}
+  .cm-head{display:flex;align-items:center;gap:7px;flex-wrap:wrap;margin-bottom:4px}
+  .cm-head h3{margin:0;font-size:13.2px;font-weight:800;letter-spacing:-.025em}
+  .cm-head .cm-src{margin-left:auto;font-size:10.4px;color:var(--muted-2)}
+  .cm-item{padding:9px 0 8px;border-top:1px solid rgba(255,255,255,.06)}
+  .cm-item:first-of-type{border-top:0;padding-top:4px}
+  .cm-top{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:5px}
+  .cm-top b{font-size:11.4px;font-weight:750;color:#ffe2ab;font-variant-numeric:tabular-nums}
+  .cm-top a{margin-left:auto;font-size:10.5px;font-weight:700;color:#a9b8e8;text-decoration:none;border:1px solid var(--line);border-radius:8px;padding:3px 8px;white-space:nowrap;background:rgba(255,255,255,.04)}
+  .cm-top a:hover{color:#fff;background:rgba(140,155,255,.18)}
+  .cm-ko{margin:0;font-size:12.4px;line-height:1.66;color:#c6d2ee;word-break:keep-all;overflow-wrap:anywhere}
+  .cm-item details{margin-top:7px}
+  .cm-item summary{cursor:pointer;font-size:10.8px;font-weight:700;color:var(--muted);list-style:none}
+  .cm-item summary::-webkit-details-marker{display:none}
+  .cm-item summary::before{content:'▸ ';color:var(--muted-2)}
+  .cm-item details[open] summary::before{content:'▾ '}
+  .cm-en{margin:7px 0 0;padding:9px 11px;border-radius:10px;background:rgba(255,255,255,.03);border:1px solid var(--line);font-size:11.3px;line-height:1.62;color:#9fadcd;white-space:pre-wrap;overflow-wrap:anywhere}
+  .ramfoot{margin-top:4px;padding-top:10px;border-top:1px dashed rgba(255,255,255,.09);font-size:10.8px;color:var(--muted-2);line-height:1.65}
+  .ramfoot b{color:#a9b8da;font-weight:700}
+  @media (max-width:760px){
+    .ramhead{margin:14px 0 10px;gap:8px}
+    .ramhead h2{font-size:17px}
+    .ramhead .rh-acts{width:100%;margin-left:0}
+    .ramdxi{padding:11px 12px;border-radius:14px}
+    .ramdxi .dx-v b{font-size:19px}
+    .ramdxi .dx-t{margin-left:0;text-align:left;font-size:10px;width:100%}
+    .ramhl{grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
+    .hlc{padding:8px 10px;border-radius:12px}
+    .hlc .hv{font-size:13.5px}
+    .ramcard{padding:11px 12px 3px;border-radius:14px}
+    .rr-nm b{font-size:12.2px}
+    .rr-q b{font-size:13.3px}
+    .ramcmt{padding:11px 12px 6px;border-radius:14px}
+    .cm-ko{font-size:12px;line-height:1.62}
   }
 
   /* ---------- 왓치리스트 v7 (코인 · 국내주식 · 미국주식 공통) ---------- */
@@ -848,7 +949,7 @@
       <div class="logo" aria-hidden="true">📊</div>
       <div>
         <h1>투자 스캐너</h1>
-        <p>매일 신문요약 · 폴리마켓 · 코인 · 주식 · 매매일지</p>
+        <p>매일 신문요약 · 램시세 · 폴리마켓 · 코인 · 주식 · 매매일지</p>
       </div>
     </div>
     <div class="topbar-right">
@@ -885,6 +986,35 @@
       <div class="newsfoot">
         출처: 네이버 블로그 <b>‘자전과 공전’</b> · 매일 05:00 새 글 업로드 · 분야별 뉴스는 <b>매일경제·한국경제</b>에서 선별 · 새 날짜는 새로고침 없이 자동으로 뜨고, 분야별 뉴스가 없는 날짜는 핵심 10줄만 보입니다.
       </div>
+    </section>
+
+    <!-- ================= 💾 램시세 (DRAMeXchange) ================= -->
+    <section class="panel" id="panel-ram" role="tabpanel" aria-label="램시세">
+      <div class="ramhead">
+        <div class="rh-main">
+          <span class="rh-kicker">💾 DRAMeXchange 현물가</span>
+          <h2>램(DRAM) 시세</h2>
+          <div class="rh-sub" id="ramSub"><span>불러오는 중…</span></div>
+        </div>
+        <div class="rh-acts">
+          <a class="ramlink" id="ramSource" href="https://dramexchange.com/" target="_blank" rel="noopener">DRAMeXchange (TrendForce) ↗</a>
+          <button class="iconbtn" id="ramRefresh" type="button" aria-label="램시세 새로고침" title="램시세 새로고침"><span class="ri" aria-hidden="true">⟳</span></button>
+        </div>
+      </div>
+
+      <div class="ramdxi" id="ramDxi" hidden></div>
+      <div class="ramhl" id="ramHl" aria-label="한눈에 보는 핵심"></div>
+
+      <div id="ramCards" aria-live="polite"></div>
+
+      <details class="rammore" id="ramMore">
+        <summary><span class="arw" aria-hidden="true">▶</span> 낸드 플래시 · 그래픽 메모리 · 웨이퍼 · 메모리 카드</summary>
+        <div id="ramExtra"></div>
+      </details>
+
+      <div class="ramcmt" id="ramCmt"></div>
+
+      <div class="ramfoot" id="ramFoot"></div>
     </section>
 
     <!-- ================= 폴리마켓 ================= -->
@@ -1224,7 +1354,7 @@
   </main>
 
   <footer class="foot">
-    <span>신문요약 출처: 네이버 블로그 ‘자전과 공전’ · Polymarket · Upbit · TradingView 공개 데이터 · 기록은 Firebase 실시간 동기화</span>
+    <span>신문요약 출처: 네이버 블로그 ‘자전과 공전’ · 램시세: DRAMeXchange (TrendForce) · Polymarket · Upbit · TradingView 공개 데이터 · 기록은 Firebase 실시간 동기화</span>
     <span>투자 조언이 아니며, 모든 판단과 책임은 본인에게 있습니다.</span>
   </footer>
 </div>
@@ -1344,10 +1474,12 @@
     camera: '<rect x="3" y="7.2" width="18" height="13.4" rx="3.4"/><circle cx="12" cy="13.9" r="3.7"/><path d="M8.4 7.2 9.7 4.4h4.6l1.3 2.8"/><circle cx="17.6" cy="10.7" r=".7" fill="currentColor" stroke="none"/>',
     book: '<path d="M4 5.6A1.6 1.6 0 0 1 5.6 4H10a2 2 0 0 1 2 2v13.4a2 2 0 0 0-2-2H4z"/><path d="M20 5.6A1.6 1.6 0 0 0 18.4 4H14a2 2 0 0 0-2 2v13.4a2 2 0 0 1 2-2h6z"/>',
     pen: '<path d="M4.6 19.4h3.9L19 8.9a2.1 2.1 0 0 0-3-3L5.5 16.4z"/><path d="M14.6 6.4 17.6 9.4"/>',
-    news: '<rect x="3.6" y="5" width="16.8" height="14" rx="2.6"/><path d="M7 9.2h6"/><path d="M7 12.6h10"/><path d="M7 16h7"/>'
+    news: '<rect x="3.6" y="5" width="16.8" height="14" rx="2.6"/><path d="M7 9.2h6"/><path d="M7 12.6h10"/><path d="M7 16h7"/>',
+    ram: '<rect x="6" y="6" width="12" height="12" rx="2.4"/><rect x="9.6" y="9.6" width="4.8" height="4.8" rx="1"/><path d="M3.3 9.4h2.7M3.3 14.6h2.7M18 9.4h2.7M18 14.6h2.7"/>'
   };
   var TABS = [
     { id: 'news', label: '신문요약', icon: 'news' },
+    { id: 'ram', label: '램시세', icon: 'ram' },
     { id: 'poly', label: '폴리마켓', icon: 'globe' },
     { id: 'coin', label: '코인마켓', icon: 'coin' },
     { id: 'kr', label: '국내주식', icon: 'chart' },
@@ -1398,6 +1530,7 @@
     window.scrollTo({ top: 0, behavior: 'auto' });
     if (window.PolyScanner && id === 'poly') window.PolyScanner.ensure();
     if (window.DailyNews && id === 'news') window.DailyNews.render();
+    if (window.RamPrices && id === 'ram') window.RamPrices.render();
     if (window.CoinMarket && id === 'coin') window.CoinMarket.activate();
     if (window.StockCharts) window.StockCharts.activate(id);
     if (window.Watchlist) window.Watchlist.activate(id);
@@ -1486,6 +1619,7 @@
         setSync(fb.connected ? 'on' : 'off', fb.connected ? '실시간 동기화' : '로컬 저장');
       });
       if (window.DailyNews) window.DailyNews.bindRemote();
+      if (window.RamPrices) window.RamPrices.bindRemote();
       if (window.PhotoAlbum) window.PhotoAlbum.bindRemote();
       if (window.TradeJournal) window.TradeJournal.bindRemote();
       if (window.TradeNotes) window.TradeNotes.bindRemote();
@@ -5396,6 +5530,211 @@
   }
 
   window.DailyNews = { render: render, bindRemote: bindRemote, refresh: refresh };
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
+  else init();
+})();
+</script>
+<script>
+/* ==================== 💾 램시세 · DRAMeXchange (TrendForce) ==================== */
+(function () {
+  var ns = { data: null, loading: true, fetched: false, bound: false };
+  var CACHE = 'honey.v9.ramPrices';
+  var REST = 'https://family-log-56c73-default-rtdb.firebaseio.com/rooms/kgh-invest-scanner-2026/state/ramPrices.json';
+  var ORDER = ['dram', 'module'];
+  var EXTRA = ['flash', 'gddr', 'wafer', 'card'];
+  var MON = { Jan: 1, Feb: 2, Mar: 3, Apr: 4, May: 5, Jun: 6, Jul: 7, Aug: 8, Sep: 9, Oct: 10, Nov: 11, Dec: 12 };
+
+  function $(id) { return document.getElementById(id); }
+  function esc(s) {
+    return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+    });
+  }
+  function isNum(v) { return typeof v === 'number' && isFinite(v); }
+  function pad2(n) { return (n < 10 ? '0' : '') + n; }
+  function num(v, d) {
+    if (!isNum(v)) return '–';
+    return v.toLocaleString('en-US', { minimumFractionDigits: d, maximumFractionDigits: d });
+  }
+  function usd(v, d) { return isNum(v) ? '$' + num(v, d == null ? 3 : d) : '–'; }
+  function pct(v) {
+    if (!isNum(v)) return '–';
+    return (v > 0 ? '+' : '') + v.toFixed(2) + '%';
+  }
+  function dirOf(v) { return !isNum(v) ? 'flat' : (v > 0 ? 'up' : (v < 0 ? 'down' : 'flat')); }
+  function shortKst(s) {
+    var m = /^(\d{4})-(\d{2})-(\d{2})\s+(\d{2}):(\d{2})/.exec(s || '');
+    return m ? (+m[2]) + '/' + (+m[3]) + ' ' + m[4] + ':' + m[5] + ' KST' : (s || '');
+  }
+  function cmtDate(s) {
+    var m = /([A-Z][a-z]{2})\.?\s*(\d{1,2})\s*[,\s]\s*(\d{4})\s*,?\s*(\d{1,2}):(\d{2})/.exec(s || '');
+    if (!m || !MON[m[1]]) return s || '';
+    return m[3] + '-' + pad2(MON[m[1]]) + '-' + pad2(+m[2]) + ' ' + pad2(+m[4]) + ':' + m[5] + ' (GMT+8)';
+  }
+
+  function hlCard(h) {
+    var isDxi = h && h.tkey === 'dxi';
+    return '<div class="hlc">' +
+      '<span class="hk">' + esc(h.label || '') + '</span>' +
+      '<b class="hv" title="' + esc(h.item || '') + '">' + (isDxi ? num(h.avg, 2) : usd(h.avg, 3)) + '</b>' +
+      '<span class="hc ramchg ' + dirOf(h.chg) + '">' + pct(h.chg) +
+      (h.chgLabel ? ' <i style="font-style:normal;font-weight:600;opacity:.62">' + esc(h.chgLabel) + '</i>' : '') + '</span>' +
+      '</div>';
+  }
+
+  function dxiBlock(d) {
+    var el = $('ramDxi');
+    if (!el) return;
+    if (!d || !isNum(d.value)) { el.hidden = true; el.innerHTML = ''; return; }
+    el.hidden = false;
+    var arrow = isNum(d.change) ? (d.change > 0 ? '▲ ' : (d.change < 0 ? '▼ ' : '')) : '';
+    var chg = isNum(d.change) ? arrow + num(Math.abs(d.change), 2) + ' (' + pct(d.changePct) + ')' : pct(d.changePct);
+    el.innerHTML = '<div class="dx-wrap">' +
+      '<span class="dx-k">DXI · DRAM 종합지수</span>' +
+      '<div class="dx-v"><b>' + num(d.value, 2) + '</b>' +
+      '<span class="dx-c ramchg ' + dirOf(d.change) + '">' + chg + '</span></div></div>' +
+      '<span class="dx-t">기준 ' + esc(shortKst(d.asOfKst) || d.asOf || '') + '<br>일간 지수 · GMT+8 18:00 발표</span>';
+  }
+
+  function tableBlock(key, t) {
+    if (!t || !t.rows || !t.rows.length) return '';
+    var weekly = t.rangeLabel === 'Weekly';
+    var rows = t.rows.map(function (r) {
+      return '<div class="ramrow">' +
+        '<div class="rr-top">' +
+          '<div class="rr-nm"><b>' + esc(r.item) + '</b>' +
+            (r.makers ? '<span title="' + esc(r.makers) + '">' + esc(r.makers) + '</span>' : '') + '</div>' +
+          '<div class="rr-q"><b>' + usd(r.avg, 3) + '</b>' +
+            '<span class="ramchg ' + dirOf(r.chg) + '">' + pct(r.chg) + '</span></div>' +
+        '</div>' +
+        '<div class="rr-range">' +
+          '<span><i>' + (weekly ? '주간' : '당일') + '</i>' + num(r.low, 2) + ' ~ ' + num(r.high, 2) + '</span>' +
+          '<span><i>세션</i>' + num(r.sLow, 2) + ' ~ ' + num(r.sHigh, 2) + '</span>' +
+        '</div></div>';
+    }).join('');
+    var base = ns.data && ns.data.tables && ns.data.tables.dram;
+    var stale = !!(t.updatedKst && base && base.updatedKst && t.updatedKst !== base.updatedKst);
+    return '<section class="ramcard" data-ram="' + key + '">' +
+      '<div class="rc-head"><h3>' + esc(t.title || key) + '<em>' + esc(t.titleKo || '') + '</em></h3>' +
+      '<span class="rc-time' + (stale ? ' old' : '') + '" title="' + esc((t.updated || '') + ' (' + (t.tz || 'GMT+8') + ')' + (stale ? ' · 최근 갱신이 아닙니다' : '')) + '">' +
+      (t.updatedKst ? esc(shortKst(t.updatedKst)) + ' 기준' : '') + '</span></div>' +
+      rows + '</section>';
+  }
+
+  function cmtBlock(list) {
+    if (!list || !list.length) return '';
+    var items = list.slice(0, 2).map(function (c) {
+      if (!c) return '';
+      return '<article class="cm-item">' +
+        '<div class="cm-top"><b>' + esc(cmtDate(c.date)) + '</b>' +
+        (c.url ? '<a href="' + esc(c.url) + '" target="_blank" rel="noopener">원문 ↗</a>' : '') + '</div>' +
+        (c.ko ? '<p class="cm-ko">' + esc(c.ko) + '</p>' : '') +
+        (c.en ? '<details><summary>영문 원문 보기</summary><p class="cm-en">' + esc(c.en) + '</p></details>' : '') +
+        '</article>';
+    }).join('');
+    return '<div class="cm-head"><h3>DRAMeXchange 최신 시황 코멘트</h3><span class="cm-src">Daily Express · 영문 원문 + 한국어 요약</span></div>' + items;
+  }
+
+  function render() {
+    var data = ns.data;
+    var cards = $('ramCards'), extra = $('ramExtra'), sub = $('ramSub'), foot = $('ramFoot'),
+      hl = $('ramHl'), cmt = $('ramCmt'), more = $('ramMore'), src = $('ramSource');
+    if (!data) {
+      dxiBlock(null);
+      if (hl) hl.innerHTML = '';
+      if (extra) extra.innerHTML = '';
+      if (cmt) cmt.innerHTML = '';
+      if (foot) foot.innerHTML = '';
+      if (more) more.hidden = true;
+      if (src) src.href = 'https://dramexchange.com/';
+      if (sub) sub.innerHTML = '<span>' + (ns.loading ? '불러오는 중…' : '아직 시세 데이터가 없어요') + '</span>';
+      if (cards) {
+        cards.innerHTML = '<section class="ramcard" style="padding:24px 16px"><div style="text-align:center;color:var(--muted);font-size:12.5px;line-height:1.75">' +
+          (ns.loading ? 'DRAMeXchange 시세를 불러오는 중이에요…' : '램시세를 불러오지 못했어요.<br>잠시 뒤 다시 시도해 주세요.') +
+          (ns.loading ? '' : '<br><button class="retry" type="button" id="ramRetry" style="margin-top:12px;padding:9px 18px;border-radius:11px;border:0;cursor:pointer;font-family:inherit;font-weight:700;font-size:12.5px;color:#fff;background:linear-gradient(140deg,#4d6bff,#9b5cff)">다시 불러오기</button>') +
+          '</div></section>';
+        var rt = $('ramRetry');
+        if (rt) rt.addEventListener('click', function () { ns.loading = true; render(); restFetch(false); });
+      }
+      return;
+    }
+    var t = data.tables || {};
+    dxiBlock(data.dxi);
+    if (hl) hl.innerHTML = (data.highlights || []).slice(0, 4).map(hlCard).join('');
+    if (cards) cards.innerHTML = ORDER.map(function (k) { return tableBlock(k, t[k]); }).join('');
+    if (extra) extra.innerHTML = EXTRA.map(function (k) { return tableBlock(k, t[k]); }).join('');
+    if (more) more.hidden = !EXTRA.some(function (k) { return t[k] && t[k].rows && t[k].rows.length; });
+    if (cmt) cmt.innerHTML = cmtBlock(data.comments);
+    if (src) src.href = data.sourceUrl || 'https://dramexchange.com/';
+    var nD = (t.dram && t.dram.rows) ? t.dram.rows.length : 0;
+    var nM = (t.module && t.module.rows) ? t.module.rows.length : 0;
+    if (sub) {
+      sub.innerHTML = '<span>기준 ' + esc(shortKst(data.spotUpdatedKst)) + '</span>' +
+        '<span class="d">·</span><span>칩 ' + nD + '종</span>' +
+        (nM ? '<span class="d">·</span><span>모듈 ' + nM + '종</span>' : '') +
+        '<span class="d">·</span><span>출처 DRAMeXchange</span>';
+    }
+    if (foot) {
+      foot.innerHTML = '참고: DRAMeXchange 현물가는 <b>1일 여러 차례 세션</b>으로 갱신됩니다 · 이 탭은 열 때마다 최신 값을 다시 불러옵니다' +
+        (data.fetchedLabel ? ' · 마지막 수집 ' + esc(data.fetchedLabel) : '') +
+        ' · 표마다 기준 시각이 다를 수 있고, 흐린 주황색 시각은 그 표의 최근 갱신이 아닙니다.';
+    }
+  }
+
+  function ingest(val, remote) {
+    ns.loading = false;
+    ns.fetched = true;
+    if (val && typeof val === 'object' && val.tables) ns.data = val;
+    if (remote && ns.data) { try { localStorage.setItem(CACHE, JSON.stringify(ns.data)); } catch (e) { /* ignore */ } }
+    render();
+  }
+  function loadCache() {
+    try {
+      var raw = localStorage.getItem(CACHE);
+      if (!raw) return;
+      var v = JSON.parse(raw);
+      if (v && typeof v === 'object' && v.tables) { ns.data = v; ns.loading = false; }
+    } catch (e) { /* ignore */ }
+  }
+  function restFetch(silent) {
+    return fetch(REST + (REST.indexOf('?') < 0 ? '?t=' : '&t=') + Date.now(), { cache: 'no-store' })
+      .then(function (r) { if (!r.ok) throw new Error('http ' + r.status); return r.json(); })
+      .then(function (v) { ingest(v, true); })
+      .catch(function () {
+        ns.loading = false;
+        render();
+        if (!silent && window.__toast) window.__toast('램시세를 불러오지 못했어요. 잠시 뒤 다시 시도해 주세요');
+      });
+  }
+  function bindRemote() {
+    var f = window.__fb;
+    if (!f || !f.ready || !f.root || ns.bound) return;
+    ns.bound = true;
+    try {
+      f.root.child('ramPrices').on('value', function (snap) { ingest(snap.val(), true); }, function () { ns.loading = false; render(); });
+    } catch (e) { /* ignore */ }
+  }
+  function refresh() {
+    if (ns.bound && ns.data) { render(); window.__toast && window.__toast('실시간으로 받은 최신 램시세예요'); return; }
+    ns.loading = true;
+    restFetch(false);
+  }
+
+  function init() {
+    var btn = $('ramRefresh');
+    if (btn) btn.addEventListener('click', function () {
+      btn.setAttribute('aria-busy', 'true');
+      var done = function () { btn.removeAttribute('aria-busy'); };
+      Promise.resolve(refresh()).then(done, done);
+      setTimeout(done, 6000);
+    });
+    loadCache();
+    render();
+    bindRemote();
+    setTimeout(function () { if (!ns.fetched) restFetch(true); }, 4000);
+  }
+
+  window.RamPrices = { render: render, bindRemote: bindRemote, refresh: refresh };
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
   else init();
 })();
