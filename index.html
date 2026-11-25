@@ -3862,7 +3862,6 @@
   }
   function activate(market) {
     if (!wl.ready || MK.indexOf(market) < 0) return;
-    if (market === 'coin') loadCoinDb();
     showList(market);
     loadMeta(market);
     if (!wl.last[market] || Date.now() - wl.last[market] > 15000) refresh(market);
